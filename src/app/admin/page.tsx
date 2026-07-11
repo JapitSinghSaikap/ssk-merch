@@ -2,6 +2,7 @@ import { sql } from "@/lib/db";
 import { redis } from "@/lib/redis";
 import { adminLogout } from "./actions";
 import OrderStatusSelect from "./OrderStatusSelect";
+import SyncSheetsButton from "./SyncSheetsButton";
 import Link from "next/link";
 
 type Registration = {
@@ -29,8 +30,12 @@ type Order = {
   customer_name: string;
   email: string;
   phone: string;
+  address_line1: string;
+  address_line2: string | null;
   city: string;
+  state: string;
   pincode: string;
+  notes: string | null;
   status: string;
   total_amount: number;
   created_at: string;
@@ -188,14 +193,24 @@ export default async function AdminPage({
               Admin Dashboard
             </h1>
           </div>
-          <form action={adminLogout}>
-            <button
-              type="submit"
-              className="border border-gold/30 px-6 py-2 text-xs tracking-[0.2em] text-warm-grey transition-colors hover:border-gold hover:text-cream"
+          <div className="flex items-center gap-3">
+            <SyncSheetsButton />
+            <a
+              href="/admin/export"
+              download
+              className="border border-gold/30 px-6 py-2 text-xs tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
             >
-              LOGOUT
-            </button>
-          </form>
+              EXPORT CSV
+            </a>
+            <form action={adminLogout}>
+              <button
+                type="submit"
+                className="border border-gold/30 px-6 py-2 text-xs tracking-[0.2em] text-warm-grey transition-colors hover:border-gold hover:text-cream"
+              >
+                LOGOUT
+              </button>
+            </form>
+          </div>
         </div>
 
         {!sql && (
@@ -261,9 +276,13 @@ export default async function AdminPage({
                       "Customer",
                       "Email",
                       "Phone",
+                      "Address",
+                      "City",
+                      "State",
+                      "Pincode",
                       "Items",
                       "Total",
-                      "Pincode",
+                      "Notes",
                       "Status",
                     ].map((h) => (
                       <th
@@ -279,7 +298,7 @@ export default async function AdminPage({
                   {ordersSlice.length === 0 && (
                     <tr>
                       <td
-                        colSpan={8}
+                        colSpan={12}
                         className="py-8 text-center text-warm-grey"
                       >
                         No orders yet.
@@ -291,33 +310,46 @@ export default async function AdminPage({
                       key={order.id}
                       className="border-b border-gold/10 align-top"
                     >
-                      <td className="py-3 pr-4 text-xs text-warm-grey">
+                      <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
                         {new Date(order.created_at).toLocaleDateString("en-IN")}
                       </td>
-                      <td className="py-3 pr-4 text-cream">
+                      <td className="py-3 pr-4 text-cream whitespace-nowrap">
                         {order.customer_name}
                       </td>
                       <td className="py-3 pr-4 text-xs text-warm-grey">
                         {order.email}
                       </td>
-                      <td className="py-3 pr-4 text-xs text-warm-grey">
+                      <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
                         {order.phone}
+                      </td>
+                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[180px]">
+                        {order.address_line1}
+                        {order.address_line2 ? `, ${order.address_line2}` : ""}
+                      </td>
+                      <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
+                        {order.city}
+                      </td>
+                      <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
+                        {order.state}
+                      </td>
+                      <td className="py-3 pr-4 text-xs text-warm-grey">
+                        {order.pincode}
                       </td>
                       <td className="py-3 pr-4 text-xs text-warm-grey">
                         {Array.isArray(order.items) &&
                           order.items.map((item, i) => (
-                            <div key={i}>
+                            <div key={i} className="whitespace-nowrap">
                               {item.product_name}
                               {item.color ? ` (${item.color})` : ""} ×
                               {item.quantity} — {item.size}
                             </div>
                           ))}
                       </td>
-                      <td className="py-3 pr-4 text-cream">
+                      <td className="py-3 pr-4 text-cream whitespace-nowrap">
                         ₹{Number(order.total_amount).toLocaleString("en-IN")}
                       </td>
-                      <td className="py-3 pr-4 text-xs text-warm-grey">
-                        {order.pincode}
+                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[140px]">
+                        {order.notes ?? "—"}
                       </td>
                       <td className="py-3">
                         <OrderStatusSelect

@@ -22,7 +22,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.redirect(new URL("/", request.url));
+  // 303 See Other forces the browser to GET the redirect target
+  // (default 307 preserves POST → causes 405 on the homepage)
+  const response = NextResponse.redirect(new URL("/", request.url), 303);
   response.cookies.delete("access_token");
   response.cookies.delete("refresh_token");
   response.cookies.delete("ssk_auth");
