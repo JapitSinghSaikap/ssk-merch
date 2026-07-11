@@ -50,44 +50,67 @@ type Order = {
 export default async function TrackOrderPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string; id?: string }>;
 }) {
-  const { email } = await searchParams;
+  const { email, id } = await searchParams;
   const trimmedEmail = (email ?? "").trim().toLowerCase();
+  const trimmedId = (id ?? "").trim().toLowerCase();
 
   let orders: Order[] = [];
   let searched = false;
+  let searchMode: "email" | "id" | null = null;
 
-  if (trimmedEmail && sql) {
-    searched = true;
-    const rows = await sql`
-      SELECT
-        o.id,
-        o.status,
-        o.total_amount,
-        o.created_at,
-        COALESCE(
-          json_agg(
-            json_build_object(
-              'product_name', i.product_name,
-              'color',        i.color,
-              'size',         i.size,
-              'quantity',     i.quantity
-            ) ORDER BY i.id
-          ) FILTER (WHERE i.id IS NOT NULL),
-          '[]'
-        ) AS items
-      FROM orders o
-      LEFT JOIN order_items i ON i.order_id = o.id
-      WHERE LOWER(o.email) = ${trimmedEmail}
-      GROUP BY o.id
-      ORDER BY o.created_at DESC
-    `;
-    orders = rows as unknown as Order[];
+  if (sql) {
+    if (trimmedEmail) {
+      searched = true;
+      searchMode = "email";
+      const rows = await sql`
+        SELECT
+          o.id, o.status, o.total_amount, o.created_at,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'product_name', i.product_name,
+                'color',        i.color,
+                'size',         i.size,
+                'quantity',     i.quantity
+              ) ORDER BY i.id
+            ) FILTER (WHERE i.id IS NOT NULL),
+            '[]'
+          ) AS items
+        FROM orders o
+        LEFT JOIN order_items i ON i.order_id = o.id
+        WHERE LOWER(o.email) = ${trimmedEmail}
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+      `;
+      orders = rows as unknown as Order[];
+    } else if (trimmedId) {
+      searched = true;
+      searchMode = "id";
+      const rows = await sql`
+        SELECT
+          o.id, o.status, o.total_amount, o.created_at,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'product_name', i.product_name,
+                'color',        i.color,
+                'size',         i.size,
+                'quantity',     i.quantity
+              ) ORDER BY i.id
+            ) FILTER (WHERE i.id IS NOT NULL),
+            '[]'
+          ) AS items
+        FROM orders o
+        LEFT JOIN order_items i ON i.order_id = o.id
+        WHERE o.id::text = ${trimmedId}
+        GROUP BY o.id
+        LIMIT 1
+      `;
+      orders = rows as unknown as Order[];
+    }
   }
-
-  const lineWidth = (stageIdx: number) =>
-    stageIdx === 0 ? "0%" : `${(stageIdx / (STAGES.length - 1)) * 100}%`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -101,30 +124,62 @@ export default async function TrackOrderPage({
             Track Order
           </h1>
           <p className="mt-2 text-sm text-warm-grey">
-            Enter the email address used at checkout to view your order status.
+            Look up your order using your email address or the Order ID from
+            your confirmation email.
           </p>
 
-          {/* Search form */}
-          <form method="GET" className="mt-8 flex gap-3">
-            <input
-              type="email"
-              name="email"
-              defaultValue={trimmedEmail}
-              placeholder="your@email.com"
-              required
-              className="flex-1 border border-gold/20 bg-transparent px-4 py-3 text-sm text-cream placeholder-warm-grey/40 outline-none transition-colors focus:border-gold/60"
-            />
-            <button
-              type="submit"
-              className="border border-gold/40 px-6 py-3 text-xs font-medium tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
-            >
-              TRACK
-            </button>
-          </form>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {/* Option 1: By Email */}
+            <div className="border border-gold/20 p-5">
+              <p className="text-[10px] font-medium tracking-[0.25em] text-gold uppercase mb-3">
+                Track by Email
+              </p>
+              <form method="GET" className="flex flex-col gap-3">
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={searchMode === "email" ? trimmedEmail : ""}
+                  placeholder="your@email.com"
+                  required
+                  className="border border-gold/20 bg-transparent px-3 py-2.5 text-sm text-cream placeholder-warm-grey/40 outline-none transition-colors focus:border-gold/60"
+                />
+                <button
+                  type="submit"
+                  className="border border-gold/40 py-2.5 text-xs font-medium tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
+                >
+                  TRACK
+                </button>
+              </form>
+            </div>
+
+            {/* Option 2: By Order ID */}
+            <div className="border border-gold/20 p-5">
+              <p className="text-[10px] font-medium tracking-[0.25em] text-gold uppercase mb-3">
+                Track by Order ID
+              </p>
+              <form method="GET" className="flex flex-col gap-3">
+                <input
+                  type="text"
+                  name="id"
+                  defaultValue={searchMode === "id" ? trimmedId : ""}
+                  placeholder="Paste Order ID from email"
+                  required
+                  className="border border-gold/20 bg-transparent px-3 py-2.5 text-sm text-cream placeholder-warm-grey/40 outline-none transition-colors focus:border-gold/60 font-mono"
+                />
+                <button
+                  type="submit"
+                  className="border border-gold/40 py-2.5 text-xs font-medium tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
+                >
+                  TRACK
+                </button>
+              </form>
+            </div>
+          </div>
 
           {!searched && (
             <p className="mt-5 text-[11px] tracking-[0.08em] text-warm-grey/40">
-              Orders typically take 10–15 business days to be delivered.
+              Your Order ID is included in the confirmation email sent after
+              payment.
             </p>
           )}
 
@@ -134,10 +189,12 @@ export default async function TrackOrderPage({
               {orders.length === 0 ? (
                 <div className="border border-gold/20 px-8 py-12 text-center">
                   <p className="text-sm text-warm-grey">
-                    No orders found for this email address.
+                    No orders found.
                   </p>
                   <p className="mt-2 text-xs text-warm-grey/50">
-                    Make sure you&apos;re using the same email you entered at checkout.
+                    {searchMode === "email"
+                      ? "Make sure you're using the same email entered at checkout."
+                      : "Make sure you've pasted the full Order ID from your confirmation email."}
                   </p>
                 </div>
               ) : (
@@ -181,8 +238,10 @@ export default async function TrackOrderPage({
                           <div
                             className="absolute top-[11px] left-2 h-px bg-gold transition-all duration-500"
                             style={{
-                              width: `calc(${lineWidth(stageIdx)} * (100% - 1rem) / 100% * 100%)`,
-                              maxWidth: "calc(100% - 1rem)",
+                              width:
+                                stageIdx === 0
+                                  ? "0%"
+                                  : `${(stageIdx / (STAGES.length - 1)) * 100}%`,
                             }}
                           />
 
@@ -195,26 +254,24 @@ export default async function TrackOrderPage({
                                 className="relative z-10 flex flex-col items-center"
                                 style={{ width: "25%" }}
                               >
-                                {/* circle */}
                                 <div
                                   className={`flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 text-[9px] font-bold transition-colors ${
                                     done
                                       ? "border-gold bg-gold text-maroon"
                                       : current
-                                      ? "border-gold bg-maroon text-gold"
-                                      : "border-gold/20 bg-maroon text-warm-grey/30"
+                                        ? "border-gold bg-maroon text-gold"
+                                        : "border-gold/20 bg-maroon text-warm-grey/30"
                                   }`}
                                 >
                                   {done ? "✓" : i + 1}
                                 </div>
-                                {/* label */}
                                 <p
                                   className={`mt-2 text-center text-[10px] leading-tight tracking-[0.04em] ${
                                     current
                                       ? "font-semibold text-gold"
                                       : done
-                                      ? "text-cream"
-                                      : "text-warm-grey/35"
+                                        ? "text-cream"
+                                        : "text-warm-grey/35"
                                   }`}
                                 >
                                   {stage.label}
