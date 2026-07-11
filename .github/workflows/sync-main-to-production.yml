@@ -1,9 +1,9 @@
-name: Sync main → production
+name: Sync production → main
 
 on:
   push:
     branches:
-      - main
+      - production
 
 jobs:
   sync:
@@ -15,10 +15,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge main into production
+      - name: Merge production into main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout production
-          git merge origin/main --no-edit
-          git push origin production
+          git checkout main
+          git merge origin/production -X theirs --no-edit
+          git push origin main
