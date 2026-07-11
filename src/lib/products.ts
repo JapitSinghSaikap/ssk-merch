@@ -12,6 +12,7 @@ export type ProductImage = {
 
 export type Product = {
   slug: string;
+  sku: string;
   name: string;
   color?: string;
   category: ProductCategory;
@@ -34,6 +35,7 @@ const ONE_SIZE = ["One Size"];
 export const products: Product[] = [
   {
     slug: "black-tshirt",
+    sku: "TSH-BLK",
     name: "Black T-Shirt",
     color: "Black",
     category: "tshirt",
@@ -52,6 +54,7 @@ export const products: Product[] = [
   },
   {
     slug: "blue-tshirt",
+    sku: "TSH-BLU",
     name: "Blue T-Shirt",
     color: "Blue",
     category: "tshirt",
@@ -70,6 +73,7 @@ export const products: Product[] = [
   },
   {
     slug: "maroon-tshirt",
+    sku: "TSH-MAR",
     name: "Maroon T-Shirt",
     color: "Maroon",
     category: "tshirt",
@@ -88,6 +92,7 @@ export const products: Product[] = [
   },
   {
     slug: "white-tshirt",
+    sku: "TSH-WHT",
     name: "White T-Shirt",
     color: "White",
     category: "tshirt",
@@ -106,6 +111,7 @@ export const products: Product[] = [
   },
   {
     slug: "black-halfsleeve-tshirt",
+    sku: "TSH-HS-BLK",
     name: "Black Half-Sleeve T-Shirt",
     color: "Black",
     category: "tshirt",
@@ -124,6 +130,7 @@ export const products: Product[] = [
   },
   {
     slug: "black-tracksuit",
+    sku: "TRK-BLK",
     name: "Black Tracksuit",
     color: "Black",
     category: "tracksuit",
@@ -142,6 +149,7 @@ export const products: Product[] = [
   },
   {
     slug: "maroon-tracksuit",
+    sku: "TRK-MAR",
     name: "Maroon Tracksuit",
     color: "Maroon",
     category: "tracksuit",
@@ -160,6 +168,7 @@ export const products: Product[] = [
   },
   {
     slug: "offwhite-sweatshirt",
+    sku: "SWT-OFF",
     name: "Off-White Sweatshirt",
     color: "Off-White",
     category: "sweatshirt",
@@ -177,6 +186,7 @@ export const products: Product[] = [
   },
   {
     slug: "maroon-sweatshirt",
+    sku: "SWT-MAR",
     name: "Maroon Sweatshirt",
     color: "Maroon",
     category: "sweatshirt",
@@ -194,6 +204,7 @@ export const products: Product[] = [
   },
   {
     slug: "black-cap",
+    sku: "CAP-BLK",
     name: "Black Cap",
     color: "Black",
     category: "cap",
@@ -212,6 +223,7 @@ export const products: Product[] = [
   },
   {
     slug: "blue-cap",
+    sku: "CAP-BLU",
     name: "Blue Cap",
     color: "Blue",
     category: "cap",
@@ -230,6 +242,7 @@ export const products: Product[] = [
   },
   {
     slug: "maroon-cap",
+    sku: "CAP-MAR",
     name: "Maroon Cap",
     color: "Maroon",
     category: "cap",
@@ -248,6 +261,7 @@ export const products: Product[] = [
   },
   {
     slug: "white-cap",
+    sku: "CAP-WHT",
     name: "White Cap",
     color: "White",
     category: "cap",
@@ -266,6 +280,7 @@ export const products: Product[] = [
   },
   {
     slug: "white-ceramic-mug",
+    sku: "MUG-CER-WHT",
     name: "White Ceramic Mug",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -282,6 +297,7 @@ export const products: Product[] = [
   },
   {
     slug: "black-mug",
+    sku: "MUG-CER-BLK",
     name: "Black Mug",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -298,6 +314,7 @@ export const products: Product[] = [
   },
   {
     slug: "frosted-beer-mug",
+    sku: "MUG-BEER",
     name: "Frosted Beer Mug",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -314,6 +331,7 @@ export const products: Product[] = [
   },
   {
     slug: "metal-mug",
+    sku: "MUG-METAL",
     name: "Metal Mug",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -330,6 +348,7 @@ export const products: Product[] = [
   },
   {
     slug: "heritage-building-magnet",
+    sku: "MAG-001",
     name: "Heritage Building Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -342,6 +361,7 @@ export const products: Product[] = [
   },
   {
     slug: "school-crest-magnet",
+    sku: "MAG-001",
     name: "School Crest Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -354,6 +374,7 @@ export const products: Product[] = [
   },
   {
     slug: "jitna-ragda-utna-tagda-magnet",
+    sku: "MAG-001",
     name: "Jitna Ragda Utna Tagda Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -366,6 +387,7 @@ export const products: Product[] = [
   },
   {
     slug: "project-lao-magnet",
+    sku: "MAG-001",
     name: "Project Lao Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -378,6 +400,7 @@ export const products: Product[] = [
   },
   {
     slug: "chaman-dhaba-magnet",
+    sku: "MAG-001",
     name: "Chaman Dhaba Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -390,6 +413,7 @@ export const products: Product[] = [
   },
   {
     slug: "school-barber-magnet",
+    sku: "MAG-001",
     name: "School Barber Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -402,6 +426,7 @@ export const products: Product[] = [
   },
   {
     slug: "maroon-tie",
+    sku: "TIE-001",
     name: "Maroon Tie",
     category: "accessories",
     categoryLabel: "Accessories",
@@ -414,6 +439,7 @@ export const products: Product[] = [
   },
   {
     slug: "striped-tie",
+    sku: "TIE-001",
     name: "Striped Tie",
     category: "accessories",
     categoryLabel: "Accessories",

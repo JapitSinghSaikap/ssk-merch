@@ -3,6 +3,7 @@ import { redis } from "@/lib/redis";
 import { adminLogout } from "./actions";
 import OrderStatusSelect from "./OrderStatusSelect";
 import SyncSheetsButton from "./SyncSheetsButton";
+import { getAllProducts } from "@/lib/products";
 import Link from "next/link";
 
 type Registration = {
@@ -40,6 +41,15 @@ type Order = {
   total_amount: number;
   created_at: string;
   items: OrderItem[];
+};
+
+const VENDOR_MAP: Record<string, string> = {
+  "TSH-BLK": "Vivi", "TSH-BLU": "Vivi", "TSH-MAR": "Vivi", "TSH-WHT": "Vivi",
+  "TSH-HS-BLK": "Vivi", "TRK-BLK": "Vivi", "TRK-MAR": "Vivi",
+  "SWT-OFF": "Vivi", "SWT-MAR": "Vivi",
+  "CAP-BLK": "Naman", "CAP-BLU": "Naman", "CAP-WHT": "Naman", "CAP-MAR": "Naman",
+  "MUG-CER-WHT": "Naman", "MUG-CER-BLK": "Naman", "MUG-BEER": "Naman", "MUG-METAL": "Naman",
+  "MAG-001": "Naman", "TIE-001": "Naman",
 };
 
 const PER_PAGE = 10;
@@ -93,6 +103,19 @@ function Pagination({
   );
 }
 
+const vendorColor: Record<string, string> = {
+  Vivi:  "bg-blue-500/10 text-blue-300 border border-blue-500/20",
+  Naman: "bg-purple-500/10 text-purple-300 border border-purple-500/20",
+};
+
+const categoryColor: Record<string, string> = {
+  "T-Shirts":    "bg-gold/10 text-gold border border-gold/20",
+  "Tracksuits":  "bg-gold/10 text-gold border border-gold/20",
+  "Sweatshirts": "bg-gold/10 text-gold border border-gold/20",
+  "Caps":        "bg-blue-500/10 text-blue-300 border border-blue-500/20",
+  "Accessories": "bg-warm-grey/10 text-warm-grey border border-warm-grey/20",
+};
+
 export default async function AdminPage({
   searchParams,
 }: {
@@ -100,7 +123,11 @@ export default async function AdminPage({
 }) {
   const params = await searchParams;
   const activeTab =
-    params.tab === "registrations" ? "registrations" : "orders";
+    params.tab === "registrations"
+      ? "registrations"
+      : params.tab === "catalogue"
+      ? "catalogue"
+      : "orders";
   const rawPage = parseInt(params.page ?? "1", 10);
   const currentPage = isNaN(rawPage) || rawPage < 1 ? 1 : rawPage;
 
@@ -157,6 +184,12 @@ export default async function AdminPage({
     }
   }
 
+  const totalRevenue = orders.reduce(
+    (sum, o) => sum + Number(o.total_amount),
+    0,
+  );
+  const pendingOrders = orders.filter((o) => o.status === "pending").length;
+
   const totalOrderPages = Math.max(1, Math.ceil(orders.length / PER_PAGE));
   const totalRegPages = Math.max(
     1,
@@ -180,11 +213,20 @@ export default async function AdminPage({
   const totalPages =
     activeTab === "orders" ? totalOrderPages : totalRegPages;
 
+  const allProducts = getAllProducts();
+
+  const tabs = [
+    { key: "orders",        label: "ORDERS",        count: orders.length },
+    { key: "registrations", label: "REGISTRATIONS", count: registrations.length },
+    { key: "catalogue",     label: "CATALOGUE",     count: allProducts.length },
+  ];
+
   return (
     <div className="min-h-screen bg-maroon px-6 py-12 lg:px-10">
       <div className="mx-auto max-w-7xl">
+
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium tracking-[0.3em] text-gold">
               SAINIK SCHOOL KAPURTHALA
@@ -193,19 +235,19 @@ export default async function AdminPage({
               Admin Dashboard
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <SyncSheetsButton />
             <a
               href="/admin/export"
               download
-              className="border border-gold/30 px-6 py-2 text-xs tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
+              className="border border-gold/30 px-5 py-2 text-xs tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
             >
               EXPORT CSV
             </a>
             <form action={adminLogout}>
               <button
                 type="submit"
-                className="border border-gold/30 px-6 py-2 text-xs tracking-[0.2em] text-warm-grey transition-colors hover:border-gold hover:text-cream"
+                className="border border-gold/30 px-5 py-2 text-xs tracking-[0.2em] text-warm-grey transition-colors hover:border-gold hover:text-cream"
               >
                 LOGOUT
               </button>
@@ -222,46 +264,52 @@ export default async function AdminPage({
           </div>
         )}
 
+        {/* Stats cards */}
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[
+            { label: "TOTAL ORDERS",    value: orders.length.toString() },
+            { label: "PENDING",          value: pendingOrders.toString() },
+            { label: "TOTAL REVENUE",    value: `₹${totalRevenue.toLocaleString("en-IN")}` },
+            { label: "REGISTRATIONS",   value: registrations.length.toString() },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="border border-gold/20 bg-maroon-dark/40 px-5 py-4"
+            >
+              <p className="text-[10px] tracking-[0.25em] text-warm-grey">
+                {stat.label}
+              </p>
+              <p className="mt-1.5 font-display text-2xl text-cream">
+                {stat.value}
+              </p>
+            </div>
+          ))}
+        </div>
+
         {/* Tab switcher */}
         <div className="mt-10 flex border-b border-gold/20">
-          <Link
-            href={buildUrl("orders", 1)}
-            className={`pb-3 pr-8 text-xs tracking-[0.2em] transition-colors border-b-2 -mb-px ${
-              activeTab === "orders"
-                ? "border-gold text-gold"
-                : "border-transparent text-warm-grey hover:text-cream"
-            }`}
-          >
-            ORDERS{" "}
-            <span
-              className={`ml-1.5 rounded-sm px-1.5 py-0.5 text-[10px] ${
-                activeTab === "orders"
-                  ? "bg-gold/20 text-gold"
-                  : "bg-white/5 text-warm-grey"
+          {tabs.map((tab) => (
+            <Link
+              key={tab.key}
+              href={buildUrl(tab.key, 1)}
+              className={`pb-3 pr-8 text-xs tracking-[0.2em] transition-colors border-b-2 -mb-px ${
+                activeTab === tab.key
+                  ? "border-gold text-gold"
+                  : "border-transparent text-warm-grey hover:text-cream"
               }`}
             >
-              {orders.length}
-            </span>
-          </Link>
-          <Link
-            href={buildUrl("registrations", 1)}
-            className={`pb-3 pr-8 text-xs tracking-[0.2em] transition-colors border-b-2 -mb-px ${
-              activeTab === "registrations"
-                ? "border-gold text-gold"
-                : "border-transparent text-warm-grey hover:text-cream"
-            }`}
-          >
-            REGISTRATIONS{" "}
-            <span
-              className={`ml-1.5 rounded-sm px-1.5 py-0.5 text-[10px] ${
-                activeTab === "registrations"
-                  ? "bg-gold/20 text-gold"
-                  : "bg-white/5 text-warm-grey"
-              }`}
-            >
-              {registrations.length}
-            </span>
-          </Link>
+              {tab.label}{" "}
+              <span
+                className={`ml-1.5 rounded-sm px-1.5 py-0.5 text-[10px] ${
+                  activeTab === tab.key
+                    ? "bg-gold/20 text-gold"
+                    : "bg-white/5 text-warm-grey"
+                }`}
+              >
+                {tab.count}
+              </span>
+            </Link>
+          ))}
         </div>
 
         {/* Orders tab */}
@@ -272,22 +320,13 @@ export default async function AdminPage({
                 <thead>
                   <tr className="border-b border-gold/20 text-left">
                     {[
-                      "Date",
-                      "Customer",
-                      "Email",
-                      "Phone",
-                      "Address",
-                      "City",
-                      "State",
-                      "Pincode",
-                      "Items",
-                      "Total",
-                      "Notes",
-                      "Status",
+                      "Date", "Customer", "Email", "Phone",
+                      "Address", "City", "State", "Pincode",
+                      "Items", "Total", "Notes", "Status",
                     ].map((h) => (
                       <th
                         key={h}
-                        className="pb-3 pr-4 text-xs tracking-[0.2em] text-warm-grey"
+                        className="pb-3 pr-4 text-[10px] tracking-[0.2em] text-warm-grey"
                       >
                         {h.toUpperCase()}
                       </th>
@@ -297,10 +336,7 @@ export default async function AdminPage({
                 <tbody>
                   {ordersSlice.length === 0 && (
                     <tr>
-                      <td
-                        colSpan={12}
-                        className="py-8 text-center text-warm-grey"
-                      >
+                      <td colSpan={12} className="py-12 text-center text-warm-grey">
                         No orders yet.
                       </td>
                     </tr>
@@ -308,12 +344,12 @@ export default async function AdminPage({
                   {ordersSlice.map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b border-gold/10 align-top"
+                      className="border-b border-gold/10 align-top hover:bg-white/[0.02] transition-colors"
                     >
                       <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
                         {new Date(order.created_at).toLocaleDateString("en-IN")}
                       </td>
-                      <td className="py-3 pr-4 text-cream whitespace-nowrap">
+                      <td className="py-3 pr-4 text-xs font-medium text-cream whitespace-nowrap">
                         {order.customer_name}
                       </td>
                       <td className="py-3 pr-4 text-xs text-warm-grey">
@@ -322,7 +358,7 @@ export default async function AdminPage({
                       <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
                         {order.phone}
                       </td>
-                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[180px]">
+                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[160px]">
                         {order.address_line1}
                         {order.address_line2 ? `, ${order.address_line2}` : ""}
                       </td>
@@ -340,16 +376,15 @@ export default async function AdminPage({
                           order.items.map((item, i) => (
                             <div key={i} className="whitespace-nowrap">
                               {item.product_name}
-                              {item.color ? ` (${item.color})` : ""} ×
-                              {item.quantity} — {item.size}
+                              {item.color ? ` (${item.color})` : ""} ×{item.quantity} — {item.size}
                             </div>
                           ))}
                       </td>
-                      <td className="py-3 pr-4 text-cream whitespace-nowrap">
+                      <td className="py-3 pr-4 text-xs font-medium text-gold whitespace-nowrap">
                         ₹{Number(order.total_amount).toLocaleString("en-IN")}
                       </td>
-                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[140px]">
-                        {order.notes ?? "—"}
+                      <td className="py-3 pr-4 text-xs text-warm-grey max-w-[120px]">
+                        {order.notes ?? <span className="text-warm-grey/30">—</span>}
                       </td>
                       <td className="py-3">
                         <OrderStatusSelect
@@ -362,11 +397,7 @@ export default async function AdminPage({
                 </tbody>
               </table>
             </div>
-            <Pagination
-              tab="orders"
-              currentPage={activePage}
-              totalPages={totalPages}
-            />
+            <Pagination tab="orders" currentPage={activePage} totalPages={totalPages} />
           </section>
         )}
 
@@ -377,17 +408,10 @@ export default async function AdminPage({
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-gold/20 text-left">
-                    {[
-                      "Date",
-                      "Name",
-                      "Email",
-                      "Phone",
-                      "Batch",
-                      "School No.",
-                    ].map((h) => (
+                    {["Date", "Name", "Email", "Phone", "Batch", "School No."].map((h) => (
                       <th
                         key={h}
-                        className="pb-3 pr-4 text-xs tracking-[0.2em] text-warm-grey"
+                        className="pb-3 pr-4 text-[10px] tracking-[0.2em] text-warm-grey"
                       >
                         {h.toUpperCase()}
                       </th>
@@ -397,20 +421,20 @@ export default async function AdminPage({
                 <tbody>
                   {regsSlice.length === 0 && (
                     <tr>
-                      <td
-                        colSpan={6}
-                        className="py-8 text-center text-warm-grey"
-                      >
+                      <td colSpan={6} className="py-12 text-center text-warm-grey">
                         No registrations yet.
                       </td>
                     </tr>
                   )}
                   {regsSlice.map((reg) => (
-                    <tr key={reg.id} className="border-b border-gold/10">
-                      <td className="py-3 pr-4 text-xs text-warm-grey">
+                    <tr
+                      key={reg.id}
+                      className="border-b border-gold/10 hover:bg-white/[0.02] transition-colors"
+                    >
+                      <td className="py-3 pr-4 text-xs text-warm-grey whitespace-nowrap">
                         {new Date(reg.created_at).toLocaleDateString("en-IN")}
                       </td>
-                      <td className="py-3 pr-4 text-cream">
+                      <td className="py-3 pr-4 text-xs font-medium text-cream">
                         {reg.title} {reg.first_name} {reg.last_name}
                       </td>
                       <td className="py-3 pr-4 text-xs text-warm-grey">
@@ -430,13 +454,77 @@ export default async function AdminPage({
                 </tbody>
               </table>
             </div>
-            <Pagination
-              tab="registrations"
-              currentPage={activePage}
-              totalPages={totalPages}
-            />
+            <Pagination tab="registrations" currentPage={activePage} totalPages={totalPages} />
           </section>
         )}
+
+        {/* Catalogue tab */}
+        {activeTab === "catalogue" && (
+          <section className="mt-8 pb-16">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-gold/20 text-left">
+                    {["SKU", "Product", "Category", "Color", "Price", "Sizes", "Vendor"].map((h) => (
+                      <th
+                        key={h}
+                        className="pb-3 pr-6 text-[10px] tracking-[0.2em] text-warm-grey"
+                      >
+                        {h.toUpperCase()}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {allProducts.map((product) => {
+                    const vendor = VENDOR_MAP[product.sku] ?? "—";
+                    return (
+                      <tr
+                        key={product.slug}
+                        className="border-b border-gold/10 hover:bg-white/[0.02] transition-colors"
+                      >
+                        <td className="py-3 pr-6 font-mono text-[11px] text-gold whitespace-nowrap">
+                          {product.sku}
+                        </td>
+                        <td className="py-3 pr-6 text-xs text-cream whitespace-nowrap">
+                          {product.name}
+                        </td>
+                        <td className="py-3 pr-6">
+                          <span
+                            className={`inline-block rounded-sm px-2 py-0.5 text-[10px] tracking-wide ${
+                              categoryColor[product.categoryLabel] ?? "bg-white/5 text-warm-grey border border-white/10"
+                            }`}
+                          >
+                            {product.categoryLabel}
+                          </span>
+                        </td>
+                        <td className="py-3 pr-6 text-xs text-warm-grey whitespace-nowrap">
+                          {product.color ?? "—"}
+                        </td>
+                        <td className="py-3 pr-6 text-xs text-gold whitespace-nowrap">
+                          ₹{product.price.toLocaleString("en-IN")}
+                        </td>
+                        <td className="py-3 pr-6 text-xs text-warm-grey whitespace-nowrap">
+                          {product.sizes.join(", ")}
+                        </td>
+                        <td className="py-3 pr-6">
+                          <span
+                            className={`inline-block rounded-sm px-2 py-0.5 text-[10px] tracking-wide ${
+                              vendorColor[vendor] ?? "text-warm-grey"
+                            }`}
+                          >
+                            {vendor}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
       </div>
     </div>
   );
