@@ -6,13 +6,13 @@ import { ChevronDown, Check, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { updateOrderStatus } from "./actions";
 
-const STATUSES = ["pending", "packed", "shipped", "delivered"] as const;
+const STATUSES = ["pending", "processing", "shipped", "delivered"] as const;
 
 const statusColor: Record<string, string> = {
-  pending:   "text-warm-grey",
-  packed:    "text-gold",
-  shipped:   "text-blue-300",
-  delivered: "text-green-300",
+  pending:    "text-warm-grey",
+  processing: "text-gold",
+  shipped:    "text-blue-300",
+  delivered:  "text-green-300",
 };
 
 export default function OrderStatusSelect({

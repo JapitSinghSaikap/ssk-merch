@@ -28,10 +28,19 @@ type Order = {
 };
 
 const statusStyle: Record<string, string> = {
-  pending: "text-warm-grey border-warm-grey/30",
-  packed: "text-gold border-gold/40",
-  shipped: "text-blue-300 border-blue-300/40",
-  delivered: "text-green-300 border-green-300/40",
+  pending:    "text-warm-grey border-warm-grey/30",
+  packed:     "text-gold border-gold/40",       // legacy
+  processing: "text-gold border-gold/40",
+  shipped:    "text-blue-300 border-blue-300/40",
+  delivered:  "text-green-300 border-green-300/40",
+};
+
+const statusLabel: Record<string, string> = {
+  pending:    "Order Placed",
+  packed:     "Processing",   // legacy
+  processing: "Processing",
+  shipped:    "Shipped",
+  delivered:  "Delivered",
 };
 
 export default async function AccountPage() {
@@ -137,7 +146,7 @@ export default async function AccountPage() {
                         <span
                           className={`border px-3 py-1 text-[10px] font-medium tracking-[0.2em] uppercase ${style}`}
                         >
-                          {order.status}
+                          {statusLabel[order.status] ?? order.status}
                         </span>
                       </div>
 
