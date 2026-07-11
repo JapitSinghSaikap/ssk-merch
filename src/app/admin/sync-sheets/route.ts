@@ -35,6 +35,7 @@ export async function POST() {
       COALESCE(
         json_agg(
           json_build_object(
+            'product_slug', i.product_slug,
             'product_name', i.product_name,
             'color', i.color,
             'size', i.size,

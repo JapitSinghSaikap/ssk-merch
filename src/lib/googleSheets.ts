@@ -1,9 +1,11 @@
 import { google } from "googleapis";
+import { getProductBySlug } from "@/lib/products";
 
 const SHEET_ID = "1VmyOugYzuW6nlx1_tUemvx4kF7-91r2V6okXxE3j7oA";
 const SHEET_NAME = "Website Dump OnDemand";
 
 type OrderItem = {
+  product_slug: string;
   product_name: string;
   color: string | null;
   size: string;
@@ -53,6 +55,7 @@ export async function syncOrdersToSheet(orders: SheetOrder[]): Promise<void> {
     "City",
     "State",
     "Pincode",
+    "SKU(s)",
     "Order Item(s)",
     "Size",
     "Quantity",
@@ -65,6 +68,9 @@ export async function syncOrdersToSheet(orders: SheetOrder[]): Promise<void> {
   // Build rows — latest order first
   const rows = orders.map((order) => {
     const items = Array.isArray(order.items) ? order.items : [];
+    const skus = items
+      .map((i) => getProductBySlug(i.product_slug)?.sku ?? "—")
+      .join(" | ");
     const itemNames = items
       .map((i) => `${i.product_name}${i.color ? ` (${i.color})` : ""}`)
       .join(" | ");
@@ -97,6 +103,7 @@ export async function syncOrdersToSheet(orders: SheetOrder[]): Promise<void> {
       order.city,
       order.state,
       order.pincode,
+      skus,
       itemNames,
       sizes,
       quantities,
@@ -112,7 +119,7 @@ export async function syncOrdersToSheet(orders: SheetOrder[]): Promise<void> {
   // Clear the sheet first, then write fresh data
   await sheets.spreadsheets.values.clear({
     spreadsheetId: SHEET_ID,
-    range: `${SHEET_NAME}!A:Q`,
+    range: `${SHEET_NAME}!A:R`,
   });
 
   await sheets.spreadsheets.values.update({

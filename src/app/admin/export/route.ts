@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 import { sql } from "@/lib/db";
+import { getProductBySlug } from "@/lib/products";
 
 const ACCESS_SECRET = new TextEncoder().encode(
   process.env.JWT_ACCESS_SECRET ?? "",
 );
 
 type OrderItem = {
+  product_slug: string;
   product_name: string;
   color: string | null;
   size: string;
@@ -66,6 +68,7 @@ export async function GET() {
       COALESCE(
         json_agg(
           json_build_object(
+            'product_slug', i.product_slug,
             'product_name', i.product_name,
             'color', i.color,
             'size', i.size,
@@ -83,7 +86,6 @@ export async function GET() {
 
   const orders = rows as unknown as Order[];
 
-  // CSV header — matches your Excel sheet columns
   const headers = [
     "Order ID",
     "Order Date",
@@ -94,6 +96,7 @@ export async function GET() {
     "City",
     "State",
     "PIN Code",
+    "SKU(s)",
     "Order Item(s)",
     "Size",
     "Quantity",
@@ -106,12 +109,14 @@ export async function GET() {
 
   for (const order of orders) {
     const items = Array.isArray(order.items) ? order.items : [];
+    const skus = items
+      .map((i) => getProductBySlug(i.product_slug)?.sku ?? "—")
+      .join(" | ");
     const itemNames = items
       .map((i) => `${i.product_name}${i.color ? ` (${i.color})` : ""}`)
       .join(" | ");
     const sizes = items.map((i) => i.size).join(" | ");
     const quantities = items.map((i) => i.quantity).join(" | ");
-
     const fullAddress = [order.address_line1, order.address_line2]
       .filter(Boolean)
       .join(", ");
@@ -126,6 +131,7 @@ export async function GET() {
       escapeCSV(order.city),
       escapeCSV(order.state),
       escapeCSV(order.pincode),
+      escapeCSV(skus),
       escapeCSV(itemNames),
       escapeCSV(sizes),
       escapeCSV(quantities),
