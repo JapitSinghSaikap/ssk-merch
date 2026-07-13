@@ -40,7 +40,7 @@ export const products: Product[] = [
     color: "Black",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -59,7 +59,7 @@ export const products: Product[] = [
     color: "Blue",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -78,7 +78,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -97,7 +97,7 @@ export const products: Product[] = [
     color: "White",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -116,7 +116,7 @@ export const products: Product[] = [
     color: "Black",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -135,7 +135,7 @@ export const products: Product[] = [
     color: "Black",
     category: "tracksuit",
     categoryLabel: "Tracksuits",
-    price: 2000,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
     description:
@@ -154,7 +154,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "tracksuit",
     categoryLabel: "Tracksuits",
-    price: 2000,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
     description:
@@ -173,7 +173,7 @@ export const products: Product[] = [
     color: "Off-White",
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
-    price: 800,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed fleece interior with a ribbed quarter-zip collar and cuffs.",
     description:
@@ -191,7 +191,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
-    price: 800,
+    price: 0,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed fleece interior with a ribbed quarter-zip collar and cuffs.",
     description:
@@ -209,7 +209,7 @@ export const products: Product[] = [
     color: "Black",
     category: "cap",
     categoryLabel: "Caps",
-    price: 399,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -228,7 +228,7 @@ export const products: Product[] = [
     color: "Blue",
     category: "cap",
     categoryLabel: "Caps",
-    price: 399,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -247,7 +247,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "cap",
     categoryLabel: "Caps",
-    price: 399,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -266,7 +266,7 @@ export const products: Product[] = [
     color: "White",
     category: "cap",
     categoryLabel: "Caps",
-    price: 399,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -284,7 +284,7 @@ export const products: Product[] = [
     name: "White Ceramic Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 350,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Premium ceramic, dishwasher and microwave safe.",
     description:
@@ -301,7 +301,7 @@ export const products: Product[] = [
     name: "Black Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 350,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Premium ceramic with a glossy black finish, dishwasher and microwave safe.",
     description:
@@ -318,7 +318,7 @@ export const products: Product[] = [
     name: "Frosted Beer Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 350,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Frosted glass, ideal for cold beverages.",
     description:
@@ -335,7 +335,7 @@ export const products: Product[] = [
     name: "Metal Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 350,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Stainless steel with double-walled insulation.",
     description:
@@ -352,7 +352,7 @@ export const products: Product[] = [
     name: "Heritage Building Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -365,7 +365,7 @@ export const products: Product[] = [
     name: "School Crest Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -378,7 +378,7 @@ export const products: Product[] = [
     name: "Jitna Ragda Utna Tagda Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -391,7 +391,7 @@ export const products: Product[] = [
     name: "Project Lao Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -404,7 +404,7 @@ export const products: Product[] = [
     name: "Chaman Dhaba Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -417,7 +417,7 @@ export const products: Product[] = [
     name: "School Barber Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 200,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -430,7 +430,7 @@ export const products: Product[] = [
     name: "Maroon Tie",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 499,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Premium microfibre fabric, fine embroidered school logo.",
     description:
@@ -443,7 +443,7 @@ export const products: Product[] = [
     name: "Striped Tie",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 499,
+    price: 0,
     sizes: ONE_SIZE,
     fabric: "Premium microfibre fabric, fine embroidered school logo.",
     description:
