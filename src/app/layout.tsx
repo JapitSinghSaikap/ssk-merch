@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartContext";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 // Pin all serverless functions to Singapore — same region as Neon (ap-southeast-1)
 // so DB calls don't cross continents. Change to your nearest Vercel region if you
@@ -101,6 +102,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
         />
         <CartProvider>{children}</CartProvider>
+        <Analytics />
         <Toaster
           position="top-right"
           toastOptions={{
