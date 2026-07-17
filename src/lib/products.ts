@@ -40,7 +40,7 @@ export const products: Product[] = [
     color: "Black",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 900,
+    price: 1, // TEMP: set to 1 for live payment test — revert to 900 after
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
