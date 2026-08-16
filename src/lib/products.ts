@@ -22,6 +22,9 @@ export type Product = {
   fabric: string;
   description: string;
   images: ProductImage[];
+  // Excluded from the shop, product pages, and checkout — planned for a
+  // later launch phase. Still visible in the admin catalogue.
+  hidden?: boolean;
 };
 
 const CLOTHING_DIR = "/images/shop/clothing";
@@ -79,6 +82,7 @@ export const products: Product[] = [
     category: "tshirt",
     categoryLabel: "T-Shirts",
     price: 0,
+    hidden: true,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -117,6 +121,7 @@ export const products: Product[] = [
     category: "tshirt",
     categoryLabel: "T-Shirts",
     price: 0,
+    hidden: true,
     sizes: CLOTHING_SIZES,
     fabric: "Premium cotton-polyester pique knit, breathable and durable.",
     description:
@@ -155,6 +160,7 @@ export const products: Product[] = [
     category: "tracksuit",
     categoryLabel: "Tracksuits",
     price: 0,
+    hidden: true,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
     description:
@@ -174,6 +180,7 @@ export const products: Product[] = [
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
     price: 0,
+    hidden: true,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed fleece interior with a ribbed quarter-zip collar and cuffs.",
     description:
@@ -192,6 +199,7 @@ export const products: Product[] = [
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
     price: 0,
+    hidden: true,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed fleece interior with a ribbed quarter-zip collar and cuffs.",
     description:
@@ -210,6 +218,7 @@ export const products: Product[] = [
     category: "cap",
     categoryLabel: "Caps",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -229,6 +238,7 @@ export const products: Product[] = [
     category: "cap",
     categoryLabel: "Caps",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -248,6 +258,7 @@ export const products: Product[] = [
     category: "cap",
     categoryLabel: "Caps",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -267,6 +278,7 @@ export const products: Product[] = [
     category: "cap",
     categoryLabel: "Caps",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Cotton twill, adjustable strap with metal buckle closure.",
     description:
@@ -288,11 +300,10 @@ export const products: Product[] = [
     sizes: ONE_SIZE,
     fabric: "Premium ceramic, dishwasher and microwave safe.",
     description:
-      "Classic white ceramic mug printed with the Sainik School Kapurthala crest.",
+      "Classic white ceramic mug printed with the Sainik School Kapurthala crest and 'Second To None' on the front, with the Saikapian wordmark on the back.",
     images: [
-      { src: `${ACCESSORIES_DIR}/White Mug Front.jpg`, label: "Front" },
-      { src: `${ACCESSORIES_DIR}/White Mug Back.jpg`, label: "Back" },
-      { src: `${ACCESSORIES_DIR}/White Mug Side.jpg`, label: "Side" },
+      { src: `${ACCESSORIES_DIR}/White Mug New Design Front.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/White Mug New Design Back.png`, label: "Back" },
     ],
   },
   {
@@ -305,11 +316,10 @@ export const products: Product[] = [
     sizes: ONE_SIZE,
     fabric: "Premium ceramic with a glossy black finish, dishwasher and microwave safe.",
     description:
-      "Glossy black ceramic mug printed with the Sainik School Kapurthala crest.",
+      "Glossy black ceramic mug printed with the Sainik School Kapurthala crest and 'Second To None' on the front, with the Saikapian wordmark on the back.",
     images: [
-      { src: `${ACCESSORIES_DIR}/Black Mug Front.jpg`, label: "Front" },
-      { src: `${ACCESSORIES_DIR}/Black Mug Back.jpg`, label: "Back" },
-      { src: `${ACCESSORIES_DIR}/Black Mug Side.jpg`, label: "Side" },
+      { src: `${ACCESSORIES_DIR}/Blac Ceramic Mug New Design Front.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/Black Ceramic Mug Design Side2.png`, label: "Back" },
     ],
   },
   {
@@ -319,6 +329,7 @@ export const products: Product[] = [
     category: "accessories",
     categoryLabel: "Accessories",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Frosted glass, ideal for cold beverages.",
     description:
@@ -336,6 +347,7 @@ export const products: Product[] = [
     category: "accessories",
     categoryLabel: "Accessories",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Stainless steel with double-walled insulation.",
     description:
@@ -344,6 +356,38 @@ export const products: Product[] = [
       { src: `${ACCESSORIES_DIR}/Metal Mug Front.jpg`, label: "Front" },
       { src: `${ACCESSORIES_DIR}/Metal Mug Back.jpg`, label: "Back" },
       { src: `${ACCESSORIES_DIR}/Metal Mug Side.jpg`, label: "Side" },
+    ],
+  },
+  {
+    slug: "small-frosted-mug",
+    sku: "MUG-FROST-SM",
+    name: "Small Frosted Mug",
+    category: "accessories",
+    categoryLabel: "Accessories",
+    price: 0,
+    sizes: ONE_SIZE,
+    fabric: "Frosted glass, ideal for cold beverages.",
+    description:
+      "Frosted glass mug printed with 'The Saikapian Way' on the front and a cheeky fill-level gauge — Full, Cruise, Low, SOS — on the back.",
+    images: [
+      { src: `${ACCESSORIES_DIR}/Beer Mug Small.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/Beer Mug Small Back.png`, label: "Back" },
+    ],
+  },
+  {
+    slug: "big-beer-mug",
+    sku: "MUG-BEER-BIG",
+    name: "Big Beer Mug",
+    category: "accessories",
+    categoryLabel: "Accessories",
+    price: 0,
+    sizes: ONE_SIZE,
+    fabric: "Frosted glass, ideal for cold beverages.",
+    description:
+      "Oversized frosted glass beer mug printed with 'The Saikapian Way' on the front and the same cheeky fill-level gauge — Full, Cruise, Low, SOS — on the back. Built for a proper toast.",
+    images: [
+      { src: `${ACCESSORIES_DIR}/Beer Mug Big Front.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/Beer Mug Big Back.png`, label: "Back" },
     ],
   },
   {
@@ -431,6 +475,7 @@ export const products: Product[] = [
     category: "accessories",
     categoryLabel: "Accessories",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Premium microfibre fabric, fine embroidered school logo.",
     description:
@@ -444,6 +489,7 @@ export const products: Product[] = [
     category: "accessories",
     categoryLabel: "Accessories",
     price: 0,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Premium microfibre fabric, fine embroidered school logo.",
     description:
@@ -456,13 +502,20 @@ export function getAllProducts() {
   return products;
 }
 
+// Products that are live on the storefront — excludes items held back for a
+// later launch phase. Use this (not getAllProducts) for anything customer-
+// facing: the shop grid, sitemap, static params, filter options.
+export function getVisibleProducts() {
+  return products.filter((product) => !product.hidden);
+}
+
 export function getProductBySlug(slug: string) {
   return products.find((product) => product.slug === slug);
 }
 
 export function getCategories() {
   const seen = new Map<ProductCategory, string>();
-  for (const product of products) {
+  for (const product of getVisibleProducts()) {
     seen.set(product.category, product.categoryLabel);
   }
   return Array.from(seen, ([value, label]) => ({ value, label }));
@@ -470,13 +523,13 @@ export function getCategories() {
 
 export function getAllSizes() {
   const sizes = new Set<string>();
-  for (const product of products) {
+  for (const product of getVisibleProducts()) {
     for (const size of product.sizes) sizes.add(size);
   }
   return Array.from(sizes);
 }
 
 export function getPriceBounds() {
-  const priceValues = products.map((product) => product.price);
+  const priceValues = getVisibleProducts().map((product) => product.price);
   return { min: Math.min(...priceValues), max: Math.max(...priceValues) };
 }
