@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ShopBrowser from "@/components/shop/ShopBrowser";
 import {
-  getAllProducts,
+  getVisibleProducts,
   getAllSizes,
   getCategories,
   getPriceBounds,
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default function ShopPage() {
-  const products = getAllProducts();
+  const products = getVisibleProducts();
   const categories = getCategories();
   const sizes = getAllSizes();
   const priceBounds = getPriceBounds();

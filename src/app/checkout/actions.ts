@@ -96,7 +96,7 @@ export async function initOrder(
   const validatedItems: Array<CartItem & { serverPrice: number }> = [];
   for (const item of cartItems) {
     const product = getProductBySlug(item.slug);
-    if (!product)
+    if (!product || product.hidden)
       return { success: false, error: `Product not found: ${item.slug}` };
     if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_ITEM_QUANTITY)
       return { success: false, error: `Quantity for ${item.name} must be between 1 and ${MAX_ITEM_QUANTITY}.` };

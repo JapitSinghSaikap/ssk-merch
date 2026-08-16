@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getAllProducts } from "@/lib/products";
+import { getVisibleProducts } from "@/lib/products";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://saikap.in";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const products = getAllProducts();
+  const products = getVisibleProducts();
 
   const productUrls: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${BASE_URL}/shop/${product.slug}`,
@@ -25,6 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/batch-orders`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
       url: `${BASE_URL}/community`,

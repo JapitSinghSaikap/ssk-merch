@@ -5,10 +5,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductGallery from "@/components/shop/ProductGallery";
 import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
-import { getAllProducts, getProductBySlug } from "@/lib/products";
+import { getVisibleProducts, getProductBySlug } from "@/lib/products";
 
 export function generateStaticParams() {
-  return getAllProducts().map((product) => ({ slug: product.slug }));
+  return getVisibleProducts().map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata({
@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) return { title: "Product Not Found" };
+  if (!product || product.hidden) return { title: "Product Not Found" };
 
   const title = `${product.name} — Sainik School Kapurthala Merch`;
   const description = product.description.slice(0, 155);
@@ -53,7 +53,7 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = getProductBySlug(slug);
 
-  if (!product) {
+  if (!product || product.hidden) {
     notFound();
   }
 
