@@ -8,6 +8,7 @@ import CartIcon from "@/components/cart/CartIcon";
 const navLinks = [
   { label: "HOME", href: "/" },
   { label: "SHOP", href: "/shop" },
+  { label: "BATCH ORDERS", href: "/batch-orders" },
   { label: "COMMUNITY", href: "/community" },
   { label: "TRACK ORDER", href: "/track-order" },
 ];
