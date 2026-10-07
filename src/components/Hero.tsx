@@ -32,7 +32,7 @@ export default function Hero() {
               SHOP NOW &rarr;
             </Link>
             <a
-              href="#"
+              href="#legacy"
               className="border border-cream/40 px-8 py-4 text-xs font-semibold tracking-[0.2em] text-cream transition-colors hover:border-gold hover:text-gold"
             >
               OUR STORY

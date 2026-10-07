@@ -24,7 +24,7 @@ const columns = [
 
 export default function Heritage() {
   return (
-    <section className="bg-maroon-dark px-6 py-24 lg:px-10">
+    <section id="legacy" className="scroll-mt-20 bg-maroon-dark px-6 py-24 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-8 border-b border-gold/20 pb-16 lg:flex-row lg:items-end lg:justify-between">
           <div>

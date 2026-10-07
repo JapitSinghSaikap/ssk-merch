@@ -45,7 +45,7 @@ export default function ProductGallery({
       </button>
 
       {images.length > 1 && (
-        <div className="mt-4 flex gap-3">
+        <div className="mt-4 flex flex-wrap gap-3">
           {images.map((image, i) => (
             <button
               key={image.label}

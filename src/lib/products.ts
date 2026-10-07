@@ -28,6 +28,7 @@ export type Product = {
 };
 
 const CLOTHING_DIR = "/images/shop/clothing";
+const TSHIRT_DIR = `${CLOTHING_DIR}/Updated Tshirt Images`;
 const ACCESSORIES_DIR = "/images/shop/accessories";
 
 const CLOTHING_SIZES = ["S", "M", "L", "XL", "XXL"];
@@ -49,10 +50,13 @@ export const products: Product[] = [
     description:
       "Classic polo tee in black with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
     images: [
-      { src: `${CLOTHING_DIR}/Black Tshirt Front.png`, label: "Front" },
-      { src: `${CLOTHING_DIR}/Black Tshirt Back.png`, label: "Back" },
-      { src: `${CLOTHING_DIR}/Black Tshirt Side.png`, label: "Side" },
-      { src: `${CLOTHING_DIR}/Black Tshirt Side1.png`, label: "Side 2" },
+      { src: `${TSHIRT_DIR}/Black Polo with Sainik School Crest.png`, label: "Front" },
+      { src: `${TSHIRT_DIR}/Sainik School Polo Portrait.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/Black Tshirt Side1.png`, label: "Model Side" },
+      { src: `${TSHIRT_DIR}/Black Tshirt Side2.png`, label: "Model Side 2" },
+      { src: `${TSHIRT_DIR}/Black Tshirt Back.png`, label: "Model Back" },
+      { src: `${TSHIRT_DIR}/Sainik School Kapurthala Embroidered Crest Black Tshirt.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/Collar Black Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
   {
@@ -68,10 +72,12 @@ export const products: Product[] = [
     description:
       "Classic polo tee in navy blue with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
     images: [
-      { src: `${CLOTHING_DIR}/Blue Tshirt Front.png`, label: "Front" },
-      { src: `${CLOTHING_DIR}/Blue Tshirt Back.png`, label: "Back" },
-      { src: `${CLOTHING_DIR}/Blue Tshirt Side1.png`, label: "Side" },
-      { src: `${CLOTHING_DIR}/Blue Tshirt Side2.png`, label: "Side 2" },
+      { src: `${TSHIRT_DIR}/Navy Blue Tshirt.png`, label: "Front" },
+      { src: `${TSHIRT_DIR}/Navy Blue Tshirt Front.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side.png`, label: "Model Side" },
+      { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side2.png`, label: "Model Side 2" },
+      { src: `${TSHIRT_DIR}/Sainik School Embroidered Crest Macro Navy Blue.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/Collar Navy Blue Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
   {
@@ -107,10 +113,12 @@ export const products: Product[] = [
     description:
       "Classic polo tee in clean white with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
     images: [
-      { src: `${CLOTHING_DIR}/White Tshirt Front.png`, label: "Front" },
-      { src: `${CLOTHING_DIR}/White Tshirt Back.png`, label: "Back" },
-      { src: `${CLOTHING_DIR}/White Tshirt Side1.png`, label: "Side" },
-      { src: `${CLOTHING_DIR}/White Tshirt Side2.png`, label: "Side 2" },
+      { src: `${TSHIRT_DIR}/White Polo Shirt with Maroon-Gold Tipping.png`, label: "Front" },
+      { src: `${TSHIRT_DIR}/White Front.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/White Side.png`, label: "Model Side" },
+      { src: `${TSHIRT_DIR}/White Back.png`, label: "Model Back" },
+      { src: `${TSHIRT_DIR}/Maroon Sainik School Embroidered Crest White Tshirt.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/Collar White Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
   {
