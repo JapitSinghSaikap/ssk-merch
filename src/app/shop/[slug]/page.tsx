@@ -5,7 +5,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductGallery from "@/components/shop/ProductGallery";
 import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
-import { getVisibleProducts, getProductBySlug } from "@/lib/products";
+import {
+  getVisibleProducts,
+  getProductBySlug,
+  getProductSummary,
+} from "@/lib/products";
 
 export function generateStaticParams() {
   return getVisibleProducts().map((product) => ({ slug: product.slug }));
@@ -21,7 +25,13 @@ export async function generateMetadata({
   if (!product || product.hidden) return { title: "Product Not Found" };
 
   const title = `${product.name} — Sainik School Kapurthala Merch`;
-  const description = product.description.slice(0, 155);
+  // Keep the meta description under ~155 chars, ending on a full sentence.
+  const summary = getProductSummary(product);
+  const lastSentenceEnd = summary.lastIndexOf(". ", 155);
+  const description =
+    summary.length <= 155 || lastSentenceEnd === -1
+      ? summary.slice(0, 155)
+      : summary.slice(0, lastSentenceEnd + 1);
   const url = `/shop/${product.slug}`;
   const image = `https://saikap.in${product.images[0].src}`;
 
@@ -61,7 +71,7 @@ export default async function ProductPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description: getProductSummary(product),
     image: product.images.map((img) => `https://saikap.in${img.src}`),
     sku: product.slug,
     brand: { "@type": "Brand", name: "Saikap" },
@@ -128,12 +138,52 @@ export default async function ProductPage({
                 {product.description}
               </p>
 
+              {product.features && product.features.length > 0 && (
+                <ul className="mt-6 space-y-3">
+                  {product.features.map((feature) => (
+                    <li
+                      key={feature.title}
+                      className="flex gap-3 text-sm leading-relaxed text-warm-grey"
+                    >
+                      <span
+                        aria-hidden
+                        className="mt-[0.55em] h-1.5 w-1.5 flex-shrink-0 rotate-45 bg-gold"
+                      />
+                      <span>
+                        <span className="font-medium text-cream">
+                          {feature.title}:
+                        </span>{" "}
+                        {feature.detail}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               <div className="mt-8 border-t border-gold/20 pt-6">
                 <p className="text-xs tracking-[0.2em] text-warm-grey">
                   FABRIC & CARE
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-warm-grey">
                   {product.fabric}
+                </p>
+              </div>
+
+              <div className="mt-6 border-t border-gold/20 pt-6">
+                <p className="text-xs tracking-[0.2em] text-warm-grey">
+                  DELIVERY & RETURNS
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-warm-grey">
+                  Free shipping on every order, delivered within 10–15 days.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-warm-grey">
+                  We&apos;re unable to offer returns or exchanges, so please
+                  {product.sizes.length > 1
+                    ? " double-check your size "
+                    : " review your order "}
+                  before checking out. If your order arrives damaged or not up
+                  to the standard you expect, reach out to us and we&apos;ll
+                  make it right.
                 </p>
               </div>
 
