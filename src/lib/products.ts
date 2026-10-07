@@ -10,6 +10,11 @@ export type ProductImage = {
   label: string;
 };
 
+export type ProductFeature = {
+  title: string;
+  detail: string;
+};
+
 export type Product = {
   slug: string;
   sku: string;
@@ -21,6 +26,8 @@ export type Product = {
   sizes: string[];
   fabric: string;
   description: string;
+  // Key-feature bullets shown under the description on the product page.
+  features?: ProductFeature[];
   images: ProductImage[];
   // Excluded from the shop, product pages, and checkout — planned for a
   // later launch phase. Still visible in the admin catalogue.
@@ -46,37 +53,71 @@ export const products: Product[] = [
     categoryLabel: "T-Shirts",
     price: 0,
     sizes: CLOTHING_SIZES,
-    fabric: "Premium cotton-polyester pique knit, breathable and durable.",
-    description:
-      "Classic polo tee in black with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
+    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
+    description: "A classic black polo with a sharp edge of school colour.",
+    features: [
+      {
+        title: "School crest embroidery",
+        detail: "Sainik School Kapurthala crest embroidered on the chest in bright white thread",
+      },
+      {
+        title: "Cotton material",
+        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+      },
+      {
+        title: "Premium look",
+        detail: "Clean polo cut with a two-button placket and an unbranded back",
+      },
+      {
+        title: "Collar & sleeve piping",
+        detail: "Gold-and-maroon tipping on the collar and both sleeve cuffs",
+      },
+    ],
     images: [
       { src: `${TSHIRT_DIR}/Black Polo with Sainik School Crest.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Sainik School Polo Portrait.png`, label: "Model Front" },
       { src: `${TSHIRT_DIR}/Black Tshirt Side1.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/Black Tshirt Side2.png`, label: "Model Side 2" },
       { src: `${TSHIRT_DIR}/Black Tshirt Back.png`, label: "Model Back" },
-      { src: `${TSHIRT_DIR}/Sainik School Kapurthala Embroidered Crest Black Tshirt.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/Black Crest Closeup.png`, label: "Crest Embroidery" },
       { src: `${TSHIRT_DIR}/Collar Black Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
   {
     slug: "blue-tshirt",
     sku: "TSH-BLU",
-    name: "Blue T-Shirt",
-    color: "Blue",
+    name: "Navy Blue T-Shirt",
+    color: "Navy Blue",
     category: "tshirt",
     categoryLabel: "T-Shirts",
     price: 0,
     sizes: CLOTHING_SIZES,
-    fabric: "Premium cotton-polyester pique knit, breathable and durable.",
-    description:
-      "Classic polo tee in navy blue with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
+    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
+    description: "A deep navy polo, timeless and easy to wear.",
+    features: [
+      {
+        title: "School crest embroidery",
+        detail: "Sainik School Kapurthala crest embroidered on the chest in white thread",
+      },
+      {
+        title: "Cotton material",
+        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+      },
+      {
+        title: "Premium look",
+        detail: "Clean polo cut with a two-button placket and an unbranded back",
+      },
+      {
+        title: "Collar & sleeve piping",
+        detail: "Gold-and-maroon tipping on the collar and both sleeve cuffs",
+      },
+    ],
     images: [
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Front.png`, label: "Model Front" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side2.png`, label: "Model Side 2" },
-      { src: `${TSHIRT_DIR}/Sainik School Embroidered Crest Macro Navy Blue.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/Navy Blue Crest Closeup.png`, label: "Crest Embroidery" },
       { src: `${TSHIRT_DIR}/Collar Navy Blue Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
@@ -109,15 +150,32 @@ export const products: Product[] = [
     categoryLabel: "T-Shirts",
     price: 0,
     sizes: CLOTHING_SIZES,
-    fabric: "Premium cotton-polyester pique knit, breathable and durable.",
-    description:
-      "Classic polo tee in clean white with tipped collar and cuffs, 'SAIKAPIAN' embroidered across the back and the Sainik School Kapurthala crest on the chest.",
+    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
+    description: "A crisp white polo in the school colours.",
+    features: [
+      {
+        title: "School crest embroidery",
+        detail: "Sainik School Kapurthala crest embroidered on the chest in rich maroon thread",
+      },
+      {
+        title: "Cotton material",
+        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+      },
+      {
+        title: "Premium look",
+        detail: "Clean polo cut with a two-button placket and an unbranded back",
+      },
+      {
+        title: "Collar & sleeve piping",
+        detail: "Maroon-and-gold tipping on the collar and both sleeve cuffs",
+      },
+    ],
     images: [
       { src: `${TSHIRT_DIR}/White Polo Shirt with Maroon-Gold Tipping.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/White Front.png`, label: "Model Front" },
       { src: `${TSHIRT_DIR}/White Side.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/White Back.png`, label: "Model Back" },
-      { src: `${TSHIRT_DIR}/Maroon Sainik School Embroidered Crest White Tshirt.png`, label: "Crest Embroidery" },
+      { src: `${TSHIRT_DIR}/White Crest Closeup.png`, label: "Crest Embroidery" },
       { src: `${TSHIRT_DIR}/Collar White Tshirt.png`, label: "Collar & Sleeve Tipping" },
     ],
   },
@@ -515,6 +573,14 @@ export function getAllProducts() {
 // facing: the shop grid, sitemap, static params, filter options.
 export function getVisibleProducts() {
   return products.filter((product) => !product.hidden);
+}
+
+// Plain-text summary for meta tags and structured data — the description
+// alone can be a short intro line when the detail lives in the features.
+export function getProductSummary(product: Product) {
+  if (!product.features?.length) return product.description;
+  const details = product.features.map((feature) => `${feature.detail}.`);
+  return [product.description, ...details].join(" ");
 }
 
 export function getProductBySlug(slug: string) {
