@@ -73,6 +73,12 @@ alter table order_items enable row level security;
 -- Values: 'user' (default) | 'admin'
 alter table users add column if not exists role text not null default 'user';
 
+-- Rule-based checkout shipping (src/lib/shipping.ts). Run on existing DBs
+-- BEFORE deploying the code that writes these columns.
+-- shipping_fee is in rupees, like total_amount (which already includes it).
+alter table orders add column if not exists shipping_fee numeric not null default 0;
+alter table orders add column if not exists shipping_rule_version text;
+
 -- Performance indexes for common query patterns
 create index if not exists idx_orders_user_id           on orders(user_id);
 create index if not exists idx_orders_razorpay_order_id on orders(razorpay_order_id);

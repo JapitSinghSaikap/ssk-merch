@@ -83,7 +83,7 @@ export default function ShopFilters({
 
       <div>
         <p className="text-xs tracking-[0.2em] text-cream">
-          PRICE — UP TO ₹{value.maxPrice}
+          PRICE — UP TO ₹{value.maxPrice.toLocaleString("en-IN")}
         </p>
         <input
           type="range"
@@ -97,8 +97,8 @@ export default function ShopFilters({
           className="mt-4 w-full accent-gold"
         />
         <div className="mt-1 flex justify-between text-[11px] text-warm-grey">
-          <span>₹{priceBounds.min}</span>
-          <span>₹{priceBounds.max}</span>
+          <span>₹{priceBounds.min.toLocaleString("en-IN")}</span>
+          <span>₹{priceBounds.max.toLocaleString("en-IN")}</span>
         </div>
       </div>
 

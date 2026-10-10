@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { redis } from "@/lib/redis";
 import { getProductBySlug } from "@/lib/products";
+import { SHIPPING_RULES, checkoutBlockedMessage, quoteShipping } from "@/lib/shipping";
 import { captureException } from "@/lib/monitoring";
 import { Ratelimit } from "@upstash/ratelimit";
 import type { CartItem } from "@/components/cart/CartContext";
@@ -92,7 +93,6 @@ export async function initOrder(
   if (!/^\d{6}$/.test(address.pincode))
     return { success: false, error: "Pincode must be 6 digits." };
 
-  let total = 0;
   const validatedItems: Array<CartItem & { serverPrice: number }> = [];
   for (const item of cartItems) {
     const product = getProductBySlug(item.slug);
@@ -100,9 +100,17 @@ export async function initOrder(
       return { success: false, error: `Product not found: ${item.slug}` };
     if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_ITEM_QUANTITY)
       return { success: false, error: `Quantity for ${item.name} must be between 1 and ${MAX_ITEM_QUANTITY}.` };
-    total += product.price * item.quantity;
     validatedItems.push({ ...item, serverPrice: product.price });
   }
+
+  // Shipping rules are enforced here, not just shown in the browser — a
+  // tampered request can't skip the accessory minimum or the delivery fee.
+  const quote = quoteShipping(validatedItems);
+  if (!quote.canCheckout)
+    return { success: false, error: checkoutBlockedMessage(quote) };
+  // orders stores rupees (numeric); Razorpay takes paise.
+  const total = quote.totalPaise / 100;
+  const shippingFee = quote.shippingFeePaise / 100;
 
   const orderId = randomUUID();
 
@@ -115,12 +123,12 @@ export async function initOrder(
         INSERT INTO orders (
           id, user_id, customer_name, phone, email,
           address_line1, address_line2, city, state, pincode, notes,
-          status, total_amount, razorpay_order_id
+          status, total_amount, shipping_fee, shipping_rule_version, razorpay_order_id
         ) VALUES (
           ${orderId}, ${userId}, ${address.customerName}, ${address.phone}, ${address.email},
           ${address.addressLine1}, ${address.addressLine2 || null}, ${address.city},
           ${address.state}, ${address.pincode}, ${address.notes || null},
-          'pending', ${total}, NULL
+          'pending', ${total}, ${shippingFee}, ${SHIPPING_RULES.version}, NULL
         )
       `,
       ...validatedItems.map(
@@ -143,7 +151,7 @@ export async function initOrder(
   let rzpOrder: { id: string };
   try {
     rzpOrder = (await razorpay.orders.create({
-      amount: total * 100,
+      amount: quote.totalPaise,
       currency: "INR",
       receipt: orderId,
     })) as { id: string };
@@ -249,6 +257,7 @@ export async function verifyPayment(params: {
           o.customer_name,
           o.email,
           o.total_amount,
+          o.shipping_fee,
           o.created_at,
           COALESCE(
             json_agg(
@@ -276,6 +285,7 @@ export async function verifyPayment(params: {
         customer_name: string;
         email: string;
         total_amount: number;
+        shipping_fee: number;
         created_at: string;
         items: Array<{
           product_name: string;
@@ -335,6 +345,12 @@ export async function verifyPayment(params: {
     <!-- Items table -->
     <table style="width:100%;border-collapse:collapse;">
       ${itemRows}
+      <tr>
+        <td style="padding:8px 0;border-bottom:1px solid #3a1a1a;color:#a09080;font-size:13px;">Delivery</td>
+        <td style="padding:8px 0;border-bottom:1px solid #3a1a1a;color:#c9a84c;font-size:13px;text-align:right;">
+          ${Number(order.shipping_fee) > 0 ? `₹${Number(order.shipping_fee).toLocaleString("en-IN")}` : "Free"}
+        </td>
+      </tr>
       <tr>
         <td style="padding:12px 0 0;font-size:11px;letter-spacing:0.15em;color:#7a6050;text-transform:uppercase;">Total</td>
         <td style="padding:12px 0 0;font-size:15px;color:#f5efe6;text-align:right;font-weight:bold;">

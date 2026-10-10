@@ -172,6 +172,25 @@ export default async function AccountPage() {
                         ))}
                       </div>
 
+                      {(() => {
+                        // total_amount includes delivery; derive it rather than
+                        // reading shipping_fee so older orders render too.
+                        const delivery =
+                          Number(order.total_amount) -
+                          order.items.reduce(
+                            (sum, item) => sum + item.unit_price * item.quantity,
+                            0,
+                          );
+                        return delivery > 0 ? (
+                          <div className="mt-2 flex items-center justify-between text-sm">
+                            <span className="text-warm-grey">Delivery</span>
+                            <span className="text-warm-grey">
+                              ₹{delivery.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                        ) : null;
+                      })()}
+
                       {/* Ref */}
                       <p className="mt-4 text-[10px] tracking-[0.1em] text-warm-grey/40">
                         REF:{" "}

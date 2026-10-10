@@ -5,6 +5,10 @@ export type ProductCategory =
   | "cap"
   | "accessories";
 
+// How an item is fulfilled and shipped — drives the checkout shipping rules
+// in lib/shipping.ts. Set explicitly per product; never infer it from the SKU.
+export type ProductFulfilment = "apparel" | "accessory";
+
 export type ProductImage = {
   src: string;
   label: string;
@@ -22,6 +26,7 @@ export type Product = {
   color?: string;
   category: ProductCategory;
   categoryLabel: string;
+  fulfilment: ProductFulfilment;
   price: number;
   sizes: string[];
   fabric: string;
@@ -41,8 +46,7 @@ const ACCESSORIES_DIR = "/images/shop/accessories";
 const CLOTHING_SIZES = ["S", "M", "L", "XL", "XXL"];
 const ONE_SIZE = ["One Size"];
 
-// NOTE: Prices and fabric/material details below are placeholders for the
-// initial build — swap in real values here once available.
+// NOTE: Prices for hidden (later-phase) products are still ₹0 placeholders.
 export const products: Product[] = [
   {
     slug: "black-tshirt",
@@ -51,7 +55,8 @@ export const products: Product[] = [
     color: "Black",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 0,
+    fulfilment: "apparel",
+    price: 999,
     sizes: CLOTHING_SIZES,
     fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description: "A classic black polo with a sharp edge of school colour.",
@@ -90,7 +95,8 @@ export const products: Product[] = [
     color: "Navy Blue",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 0,
+    fulfilment: "apparel",
+    price: 999,
     sizes: CLOTHING_SIZES,
     fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description: "A deep navy polo, timeless and easy to wear.",
@@ -128,6 +134,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "tshirt",
     categoryLabel: "T-Shirts",
+    fulfilment: "apparel",
     price: 0,
     hidden: true,
     sizes: CLOTHING_SIZES,
@@ -148,7 +155,8 @@ export const products: Product[] = [
     color: "White",
     category: "tshirt",
     categoryLabel: "T-Shirts",
-    price: 0,
+    fulfilment: "apparel",
+    price: 999,
     sizes: CLOTHING_SIZES,
     fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description: "A crisp white polo in the school colours.",
@@ -186,6 +194,7 @@ export const products: Product[] = [
     color: "Black",
     category: "tshirt",
     categoryLabel: "T-Shirts",
+    fulfilment: "apparel",
     price: 0,
     hidden: true,
     sizes: CLOTHING_SIZES,
@@ -206,7 +215,8 @@ export const products: Product[] = [
     color: "Black",
     category: "tracksuit",
     categoryLabel: "Tracksuits",
-    price: 0,
+    fulfilment: "apparel",
+    price: 2199,
     sizes: CLOTHING_SIZES,
     fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
     description:
@@ -225,6 +235,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "tracksuit",
     categoryLabel: "Tracksuits",
+    fulfilment: "apparel",
     price: 0,
     hidden: true,
     sizes: CLOTHING_SIZES,
@@ -245,6 +256,7 @@ export const products: Product[] = [
     color: "Off-White",
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
+    fulfilment: "apparel",
     price: 0,
     hidden: true,
     sizes: CLOTHING_SIZES,
@@ -264,6 +276,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "sweatshirt",
     categoryLabel: "Sweatshirts",
+    fulfilment: "apparel",
     price: 0,
     hidden: true,
     sizes: CLOTHING_SIZES,
@@ -283,6 +296,7 @@ export const products: Product[] = [
     color: "Black",
     category: "cap",
     categoryLabel: "Caps",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -303,6 +317,7 @@ export const products: Product[] = [
     color: "Blue",
     category: "cap",
     categoryLabel: "Caps",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -323,6 +338,7 @@ export const products: Product[] = [
     color: "Maroon",
     category: "cap",
     categoryLabel: "Caps",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -343,6 +359,7 @@ export const products: Product[] = [
     color: "White",
     category: "cap",
     categoryLabel: "Caps",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -362,7 +379,8 @@ export const products: Product[] = [
     name: "White Ceramic Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 299,
     sizes: ONE_SIZE,
     fabric: "Premium ceramic, dishwasher and microwave safe.",
     description:
@@ -370,6 +388,9 @@ export const products: Product[] = [
     images: [
       { src: `${ACCESSORIES_DIR}/White Mug New Design Front.png`, label: "Front" },
       { src: `${ACCESSORIES_DIR}/White Mug New Design Back.png`, label: "Back" },
+      { src: `${ACCESSORIES_DIR}/White Mug3.png`, label: "Lifestyle" },
+      { src: `${ACCESSORIES_DIR}/White Mug 1.png`, label: "Lifestyle 2" },
+      { src: `${ACCESSORIES_DIR}/White Mug2.png`, label: "In Hand" },
     ],
   },
   {
@@ -378,7 +399,8 @@ export const products: Product[] = [
     name: "Black Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 399,
     sizes: ONE_SIZE,
     fabric: "Premium ceramic with a glossy black finish, dishwasher and microwave safe.",
     description:
@@ -386,14 +408,18 @@ export const products: Product[] = [
     images: [
       { src: `${ACCESSORIES_DIR}/Blac Ceramic Mug New Design Front.png`, label: "Front" },
       { src: `${ACCESSORIES_DIR}/Black Ceramic Mug Design Side2.png`, label: "Back" },
+      { src: `${ACCESSORIES_DIR}/Black Cermic Mug 2.png`, label: "Lifestyle" },
+      { src: `${ACCESSORIES_DIR}/Black Ceramic Mug 3.png`, label: "Lifestyle 2" },
+      { src: `${ACCESSORIES_DIR}/Black Ceramic Mug.png`, label: "In Hand" },
     ],
   },
   {
     slug: "frosted-beer-mug",
-    sku: "MUG-BEER",
+    sku: "MUG-BEER-FROSTED",
     name: "Frosted Beer Mug",
     category: "accessories",
     categoryLabel: "Accessories",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -412,6 +438,7 @@ export const products: Product[] = [
     name: "Metal Mug",
     category: "accessories",
     categoryLabel: "Accessories",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -426,11 +453,12 @@ export const products: Product[] = [
   },
   {
     slug: "small-frosted-mug",
-    sku: "MUG-FROST-SM",
+    sku: "MUG-BEER-SMALL",
     name: "Small Frosted Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 349,
     sizes: ONE_SIZE,
     fabric: "Frosted glass, ideal for cold beverages.",
     description:
@@ -438,15 +466,18 @@ export const products: Product[] = [
     images: [
       { src: `${ACCESSORIES_DIR}/Beer Mug Small.png`, label: "Front" },
       { src: `${ACCESSORIES_DIR}/Beer Mug Small Back.png`, label: "Back" },
+      { src: `${ACCESSORIES_DIR}/Frosted Mug Small.png`, label: "Lifestyle" },
+      { src: `${ACCESSORIES_DIR}/Frosted Small Mug.png`, label: "Lifestyle Back" },
     ],
   },
   {
     slug: "big-beer-mug",
-    sku: "MUG-BEER-BIG",
+    sku: "MUG-BEER",
     name: "Big Beer Mug",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 449,
     sizes: ONE_SIZE,
     fabric: "Frosted glass, ideal for cold beverages.",
     description:
@@ -454,6 +485,9 @@ export const products: Product[] = [
     images: [
       { src: `${ACCESSORIES_DIR}/Beer Mug Big Front.png`, label: "Front" },
       { src: `${ACCESSORIES_DIR}/Beer Mug Big Back.png`, label: "Back" },
+      { src: `${ACCESSORIES_DIR}/Beer Mug1 Big.png`, label: "Lifestyle" },
+      { src: `${ACCESSORIES_DIR}/Beer Mug Big3.png`, label: "Lifestyle 2" },
+      { src: `${ACCESSORIES_DIR}/Beer Mug2 Big.png`, label: "In Hand" },
     ],
   },
   {
@@ -462,12 +496,16 @@ export const products: Product[] = [
     name: "Heritage Building Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
       "Fridge magnet featuring an illustration of the Sainik School Kapurthala campus building.",
-    images: [{ src: `${ACCESSORIES_DIR}/Fridge Magnet 1.png`, label: "Front" }],
+    images: [
+      { src: `${ACCESSORIES_DIR}/Fridge Magnet 1.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/School Fridge Magnet.png`, label: "On Fridge" },
+    ],
   },
   {
     slug: "school-crest-magnet",
@@ -475,7 +513,9 @@ export const products: Product[] = [
     name: "School Crest Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -488,12 +528,16 @@ export const products: Product[] = [
     name: "Jitna Ragda Utna Tagda Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
       "A nostalgic nod to push-up punishments — every Saikapian's favourite inside joke, on a fridge magnet.",
-    images: [{ src: `${ACCESSORIES_DIR}/Fridge Magnet3.png`, label: "Front" }],
+    images: [
+      { src: `${ACCESSORIES_DIR}/Fridge Magnet3.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/Jitna Ragda Utna Tagda Magnet.png`, label: "On Fridge" },
+    ],
   },
   {
     slug: "project-lao-magnet",
@@ -501,7 +545,9 @@ export const products: Product[] = [
     name: "Project Lao Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -514,7 +560,9 @@ export const products: Product[] = [
     name: "Chaman Dhaba Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
+    hidden: true,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
@@ -527,12 +575,16 @@ export const products: Product[] = [
     name: "School Barber Magnet",
     category: "accessories",
     categoryLabel: "Accessories",
-    price: 0,
+    fulfilment: "accessory",
+    price: 99,
     sizes: ONE_SIZE,
     fabric: "Printed acrylic fridge magnet.",
     description:
       "'Our School Barber' — a fond, funny throwback to Billu Barber and mandatory haircut day, on a fridge magnet.",
-    images: [{ src: `${ACCESSORIES_DIR}/Fridge Magnet6.png`, label: "Front" }],
+    images: [
+      { src: `${ACCESSORIES_DIR}/Fridge Magnet6.png`, label: "Front" },
+      { src: `${ACCESSORIES_DIR}/Barber School Magnet.png`, label: "On Fridge" },
+    ],
   },
   {
     slug: "maroon-tie",
@@ -540,6 +592,7 @@ export const products: Product[] = [
     name: "Maroon Tie",
     category: "accessories",
     categoryLabel: "Accessories",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
@@ -554,6 +607,7 @@ export const products: Product[] = [
     name: "Striped Tie",
     category: "accessories",
     categoryLabel: "Accessories",
+    fulfilment: "accessory",
     price: 0,
     hidden: true,
     sizes: ONE_SIZE,
