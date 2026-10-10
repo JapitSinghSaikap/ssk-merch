@@ -20,6 +20,13 @@ export default function OrderTotals({ quote }: { quote: ShippingQuote }) {
         <div className="flex items-center justify-between text-sm">
           <p className="text-xs tracking-[0.2em] text-warm-grey">DELIVERY</p>
           <p className={display.deliveryLabel === "FREE" ? "text-gold" : "text-cream"}>
+            {display.deliveryStrikePaise !== null && (
+              <>
+                <s className="text-warm-grey">
+                  {formatPaise(display.deliveryStrikePaise)}
+                </s>{" "}
+              </>
+            )}
             {display.deliveryLabel}
           </p>
         </div>

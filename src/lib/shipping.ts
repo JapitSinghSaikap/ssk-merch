@@ -24,6 +24,9 @@ export const SHIPPING_RULES = {
   freeAccessoryShippingThresholdPaise: 400_00,
   standardAccessoryShippingFeePaise: 99_00,
   apparelShippingFeePaise: 0,
+  // Delivery value shown struck through on apparel when SAIKAPIAN covers it
+  // (owner's choice; the accessory reference is the real standard fee).
+  apparelShippingReferencePaise: 149_00,
   promoLabel: "SAIKAPIAN",
 } as const;
 
@@ -128,6 +131,8 @@ export function quotePricedLines(lines: PricedLine[]): ShippingQuote {
 export type ShippingDisplay = {
   // Value for the DELIVERY line of the summary.
   deliveryLabel: string;
+  // Struck-through delivery amount shown beside FREE when SAIKAPIAN applies.
+  deliveryStrikePaise: number | null;
   // Set only when every shipping group in the order is free.
   promo: string | null;
   // Main call to action; shown as an error when checkout is blocked.
@@ -150,6 +155,7 @@ export function shippingDisplay(quote: ShippingQuote): ShippingDisplay {
       : quote.shippingFeePaise > 0
         ? formatPaise(quote.shippingFeePaise)
         : "FREE",
+    deliveryStrikePaise: null,
     promo: null,
     prompt: null,
     details: [],
@@ -163,9 +169,14 @@ export function shippingDisplay(quote: ShippingQuote): ShippingDisplay {
   if (isEmpty) return display;
 
   if (allShippingFree) {
-    display.promo = quote.hasAccessories
-      ? `✓ ${rules.promoLabel} applied — Free shipping unlocked!`
-      : `✓ ${rules.promoLabel} applied — Free delivery included`;
+    display.deliveryStrikePaise =
+      (quote.hasApparel ? rules.apparelShippingReferencePaise : 0) +
+      (quote.hasAccessories ? rules.standardAccessoryShippingFeePaise : 0);
+    const applied = `✓ ${rules.promoLabel} coupon code applied`;
+    if (!quote.hasAccessories) display.promo = `${applied} — Free delivery`;
+    else if (!quote.hasApparel)
+      display.promo = `${applied} — ${formatPaise(rules.standardAccessoryShippingFeePaise)} delivery saved`;
+    else display.promo = `${applied} — Free shipping unlocked!`;
   } else if (!quote.canCheckout) {
     display.prompt = checkoutBlockedMessage(quote);
     display.details.push(
