@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductGallery from "@/components/shop/ProductGallery";
 import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
+import { SHIPPING_RULES, formatPaise } from "@/lib/shipping";
 import {
   getVisibleProducts,
   getProductBySlug,
@@ -131,7 +132,7 @@ export default async function ProductPage({
                 {product.name}
               </h1>
               <p className="mt-4 font-display text-2xl text-gold">
-                ₹{product.price}
+                ₹{product.price.toLocaleString("en-IN")}
               </p>
 
               <p className="mt-6 text-sm leading-relaxed text-warm-grey">
@@ -174,7 +175,9 @@ export default async function ProductPage({
                   DELIVERY & RETURNS
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-warm-grey">
-                  Free shipping on every order, delivered within 10–15 days.
+                  {product.fulfilment === "apparel"
+                    ? "Shipping included, delivered within 10–15 days."
+                    : `Delivered within 10–15 days. Accessory orders start at ${formatPaise(SHIPPING_RULES.minAccessorySubtotalPaise)}, with free delivery on accessories totalling ${formatPaise(SHIPPING_RULES.freeAccessoryShippingThresholdPaise)} or more (${formatPaise(SHIPPING_RULES.standardAccessoryShippingFeePaise)} delivery below that).`}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-warm-grey">
                   We&apos;re unable to offer returns or exchanges, so please

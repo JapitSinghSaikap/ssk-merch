@@ -48,7 +48,8 @@ const VENDOR_MAP: Record<string, string> = {
   "TSH-HS-BLK": "Vivi", "TRK-BLK": "Vivi", "TRK-MAR": "Vivi",
   "SWT-OFF": "Vivi", "SWT-MAR": "Vivi",
   "CAP-BLK": "Naman", "CAP-BLU": "Naman", "CAP-WHT": "Naman", "CAP-MAR": "Naman",
-  "MUG-CER-WHT": "Naman", "MUG-CER-BLK": "Naman", "MUG-BEER": "Naman", "MUG-METAL": "Naman",
+  "MUG-CER-WHT": "Naman", "MUG-CER-BLK": "Naman", "MUG-BEER": "Naman", "MUG-BEER-SMALL": "Naman",
+  "MUG-BEER-FROSTED": "Naman", "MUG-METAL": "Naman",
   "MAG-001": "Naman", "TIE-001": "Naman",
 };
 

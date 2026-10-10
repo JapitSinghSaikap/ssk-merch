@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useCart } from "@/components/cart/CartContext";
+import OrderTotals from "@/components/cart/OrderTotals";
 
 export default function CartView() {
-  const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, shippingQuote } = useCart();
 
   if (items.length === 0) {
     return (
@@ -112,22 +113,24 @@ export default function CartView() {
       </div>
 
       <div className="mt-8 border-t border-gold/20 pt-8">
-        <div className="flex items-center justify-between">
-          <p className="text-xs tracking-[0.2em] text-warm-grey">SUBTOTAL</p>
-          <p className="font-display text-2xl text-gold">
-            ₹{totalPrice.toLocaleString("en-IN")}
-          </p>
-        </div>
-        <p className="mt-1 text-right text-xs text-warm-grey">
-          Shipping included · Estimated delivery 10–15 days
-        </p>
+        <OrderTotals quote={shippingQuote} />
 
-        <Link
-          href="/checkout"
-          className="mt-8 block w-full bg-gold px-8 py-4 text-center text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90"
-        >
-          PROCEED TO CHECKOUT
-        </Link>
+        {shippingQuote.canCheckout ? (
+          <Link
+            href="/checkout"
+            className="mt-8 block w-full bg-gold px-8 py-4 text-center text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90"
+          >
+            PROCEED TO CHECKOUT
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="mt-8 block w-full cursor-not-allowed bg-gold px-8 py-4 text-center text-xs font-semibold tracking-[0.2em] text-maroon-dark opacity-60"
+          >
+            PROCEED TO CHECKOUT
+          </button>
+        )}
 
         <Link
           href="/shop"

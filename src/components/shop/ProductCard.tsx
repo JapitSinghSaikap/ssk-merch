@@ -57,7 +57,7 @@ export default function ProductCard({
           {product.categoryLabel.toUpperCase()}
         </p>
         <h3 className="mt-1 font-display text-lg text-cream">{product.name}</h3>
-        <p className="mt-1 text-sm text-gold">₹{product.price}</p>
+        <p className="mt-1 text-sm text-gold">₹{product.price.toLocaleString("en-IN")}</p>
       </div>
     </Link>
   );

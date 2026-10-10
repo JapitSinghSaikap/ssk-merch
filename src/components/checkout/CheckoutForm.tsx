@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/CartContext";
+import OrderTotals from "@/components/cart/OrderTotals";
 import { toast } from "sonner";
 import { initOrder, verifyPayment } from "@/app/checkout/actions";
 import type { AddressFields } from "@/app/checkout/actions";
@@ -36,7 +37,7 @@ type Prefill = {
 };
 
 export default function CheckoutForm({ prefill }: { prefill?: Prefill }) {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, shippingQuote, clearCart } = useCart();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -181,15 +182,9 @@ export default function CheckoutForm({ prefill }: { prefill?: Prefill }) {
             ))}
           </div>
 
-          <div className="mt-4 flex items-center justify-between border-t border-gold/20 pt-4">
-            <p className="text-xs tracking-[0.2em] text-warm-grey">TOTAL</p>
-            <p className="font-display text-2xl text-gold">
-              ₹{totalPrice.toLocaleString("en-IN")}
-            </p>
+          <div className="mt-4">
+            <OrderTotals quote={shippingQuote} />
           </div>
-          <p className="mt-1 text-right text-xs text-warm-grey">
-            Estimated delivery: 10–15 days. Shipping included.
-          </p>
         </div>
 
         {/* Address form */}
@@ -348,7 +343,7 @@ export default function CheckoutForm({ prefill }: { prefill?: Prefill }) {
 
           <button
             type="submit"
-            disabled={isPending || items.length === 0}
+            disabled={isPending || items.length === 0 || !shippingQuote.canCheckout}
             className="w-full bg-gold px-8 py-4 text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "PROCESSING..." : "PLACE ORDER"}

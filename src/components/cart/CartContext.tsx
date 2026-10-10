@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { getProductBySlug } from "@/lib/products";
+import { quoteShipping, type ShippingQuote } from "@/lib/shipping";
 
 export type CartItem = {
   slug: string;
@@ -17,13 +19,28 @@ type CartContextType = {
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
   updateQuantity: (slug: string, size: string, quantity: number) => void;
   removeItem: (slug: string, size: string) => void;
+  // Drops every accessory, leaving apparel — the way out of a cart blocked by
+  // the accessory minimum.
+  removeAccessories: () => void;
   clearCart: () => void;
   totalItems: number;
-  totalPrice: number;
+  // Subtotal, delivery fee and total under the checkout shipping rules.
+  shippingQuote: ShippingQuote;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "ssk-cart";
+
+// A saved cart can outlive catalogue changes — re-read prices from the
+// catalogue and drop items that are no longer for sale, so the cart shows
+// what checkout will actually charge.
+function refreshItems(stored: CartItem[]): CartItem[] {
+  return stored.flatMap((item) => {
+    const product = getProductBySlug(item.slug);
+    if (!product || product.hidden) return [];
+    return [{ ...item, price: product.price }];
+  });
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -37,7 +54,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const id = setTimeout(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) setItems(JSON.parse(stored));
+        if (stored) setItems(refreshItems(JSON.parse(stored)));
       } catch {
         // localStorage unavailable or corrupt — start fresh
       }
@@ -92,6 +109,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   }
 
+  function removeAccessories() {
+    setItems((prev) =>
+      prev.filter(
+        (i) => getProductBySlug(i.slug)?.fulfilment !== "accessory",
+      ),
+    );
+  }
+
   function clearCart() {
     setItems([]);
     // Clear localStorage immediately — don't wait for the persistence effect.
@@ -105,7 +130,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const shippingQuote = quoteShipping(items);
 
   return (
     <CartContext.Provider
@@ -114,9 +139,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         addItem,
         updateQuantity,
         removeItem,
+        removeAccessories,
         clearCart,
         totalItems,
-        totalPrice,
+        shippingQuote,
       }}
     >
       {children}
