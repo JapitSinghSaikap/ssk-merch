@@ -185,11 +185,17 @@ export default async function AdminPage({
     }
   }
 
-  const totalRevenue = orders.reduce(
+  // Only count orders that have been paid — exclude abandoned (pending) and failed
+  const PAID_STATUSES = ["paid", "processing", "shipped", "delivered"];
+  const paidOrders = orders.filter((o) => PAID_STATUSES.includes(o.status));
+
+  const totalRevenue = paidOrders.reduce(
     (sum, o) => sum + Number(o.total_amount),
     0,
   );
-  const pendingOrders = orders.filter((o) => o.status === "pending").length;
+  // "Pending" for admin = paid but not yet processed
+  const pendingOrders = orders.filter((o) => o.status === "paid").length;
+  const abandonedOrders = orders.filter((o) => o.status === "pending").length;
 
   const totalOrderPages = Math.max(1, Math.ceil(orders.length / PER_PAGE));
   const totalRegPages = Math.max(
@@ -217,7 +223,7 @@ export default async function AdminPage({
   const allProducts = getAllProducts();
 
   const tabs = [
-    { key: "orders",        label: "ORDERS",        count: orders.length },
+    { key: "orders",        label: "ORDERS",        count: paidOrders.length },
     { key: "registrations", label: "REGISTRATIONS", count: registrations.length },
     { key: "catalogue",     label: "CATALOGUE",     count: allProducts.length },
   ];
@@ -268,10 +274,10 @@ export default async function AdminPage({
         {/* Stats cards */}
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { label: "TOTAL ORDERS",    value: orders.length.toString() },
-            { label: "PENDING",          value: pendingOrders.toString() },
-            { label: "TOTAL REVENUE",    value: `₹${totalRevenue.toLocaleString("en-IN")}` },
-            { label: "REGISTRATIONS",   value: registrations.length.toString() },
+            { label: "TOTAL ORDERS",    value: paidOrders.length.toString(),                        sub: `${abandonedOrders} abandoned` },
+            { label: "AWAITING ACTION", value: pendingOrders.toString(),                             sub: "paid, not processed" },
+            { label: "TOTAL REVENUE",   value: `₹${totalRevenue.toLocaleString("en-IN")}`,          sub: "paid orders only" },
+            { label: "REGISTRATIONS",   value: registrations.length.toString(),                     sub: null },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -283,6 +289,9 @@ export default async function AdminPage({
               <p className="mt-1.5 font-display text-2xl text-cream">
                 {stat.value}
               </p>
+              {stat.sub && (
+                <p className="mt-0.5 text-[10px] text-warm-grey/50">{stat.sub}</p>
+              )}
             </div>
           ))}
         </div>
