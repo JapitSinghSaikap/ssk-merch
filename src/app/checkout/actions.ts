@@ -383,6 +383,7 @@ export async function verifyPayment(params: {
       await resend.emails.send({
         from: RESEND_FROM_EMAIL,
         to: order.email,
+        bcc: process.env.ADMIN_NOTIFICATION_EMAIL,
         subject: `Order Confirmed – #${shortRef} | SAIKAP Merch`,
         html,
       });
