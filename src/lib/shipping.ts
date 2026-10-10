@@ -22,7 +22,7 @@ export const SHIPPING_RULES = {
   version: "2026-10-v1",
   minAccessorySubtotalPaise: 198_00,
   freeAccessoryShippingThresholdPaise: 400_00,
-  standardAccessoryShippingFeePaise: 99_00,
+  standardAccessoryShippingFeePaise: 49_00,
   apparelShippingFeePaise: 0,
   // Delivery value shown struck through on apparel when SAIKAPIAN covers it
   // (owner's choice; the accessory reference is the real standard fee).

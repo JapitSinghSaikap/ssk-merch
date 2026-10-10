@@ -79,8 +79,8 @@ export const products: Product[] = [
       },
     ],
     images: [
-      { src: `${TSHIRT_DIR}/Black Polo with Sainik School Crest.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Sainik School Polo Portrait.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/Black Polo with Sainik School Crest.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Black Tshirt Side1.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/Black Tshirt Side2.png`, label: "Model Side 2" },
       { src: `${TSHIRT_DIR}/Black Tshirt Back.png`, label: "Model Back" },
@@ -119,8 +119,8 @@ export const products: Product[] = [
       },
     ],
     images: [
-      { src: `${TSHIRT_DIR}/Navy Blue Tshirt.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Front.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/Navy Blue Tshirt.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/Navy Blue Tshirt Side2.png`, label: "Model Side 2" },
       { src: `${TSHIRT_DIR}/Navy Blue Crest Closeup.png`, label: "Crest Embroidery" },
@@ -179,8 +179,8 @@ export const products: Product[] = [
       },
     ],
     images: [
-      { src: `${TSHIRT_DIR}/White Polo Shirt with Maroon-Gold Tipping.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/White Front.png`, label: "Model Front" },
+      { src: `${TSHIRT_DIR}/White Polo Shirt with Maroon-Gold Tipping.png`, label: "Front" },
       { src: `${TSHIRT_DIR}/White Side.png`, label: "Model Side" },
       { src: `${TSHIRT_DIR}/White Back.png`, label: "Model Back" },
       { src: `${TSHIRT_DIR}/White Crest Closeup.png`, label: "Crest Embroidery" },
