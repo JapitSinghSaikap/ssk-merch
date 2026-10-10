@@ -11,6 +11,7 @@ const navLinks = [
   { label: "BATCH ORDERS", href: "/batch-orders" },
   { label: "COMMUNITY", href: "/community" },
   { label: "TRACK ORDER", href: "/track-order" },
+  { label: "CONTACT", href: "/contact" },
 ];
 
 function checkAuth(): boolean {
