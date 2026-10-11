@@ -58,7 +58,7 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 999,
     sizes: CLOTHING_SIZES,
-    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
+    fabric: "PC fabric: 70% polyester, 30% cotton. Durable and easy to care for.",
     description: "A classic black polo with a sharp edge of school colour.",
     features: [
       {
@@ -66,8 +66,8 @@ export const products: Product[] = [
         detail: "Sainik School Kapurthala crest embroidered on the chest in bright white thread",
       },
       {
-        title: "Cotton material",
-        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+        title: "Fabric",
+        detail: "Durable PC (polyester-cotton) blend, 70% polyester and 30% cotton, that is easy to care for",
       },
       {
         title: "Premium look",
@@ -98,7 +98,7 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 999,
     sizes: CLOTHING_SIZES,
-    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
+    fabric: "PC fabric: 70% polyester, 30% cotton. Durable and easy to care for.",
     description: "A deep navy polo, timeless and easy to wear.",
     features: [
       {
@@ -106,8 +106,8 @@ export const products: Product[] = [
         detail: "Sainik School Kapurthala crest embroidered on the chest in white thread",
       },
       {
-        title: "Cotton material",
-        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+        title: "Fabric",
+        detail: "Durable PC (polyester-cotton) blend, 70% polyester and 30% cotton, that is easy to care for",
       },
       {
         title: "Premium look",
@@ -218,14 +218,37 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 2199,
     sizes: CLOTHING_SIZES,
-    fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
+    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description:
-      "Full-zip tracksuit jacket and trousers in black, trimmed in gold-and-maroon racing stripes, with 'SAIKAPIAN' embroidered across the back and the school crest on the chest.",
+      "A full-zip black tracksuit with sporty red-and-white detailing, made for reunions, morning runs and everything in between.",
+    features: [
+      {
+        title: "School crest embroidery",
+        detail: "Sainik School Kapurthala crest embroidered on the chest in white thread",
+      },
+      {
+        title: "SAIKAPIAN on the back",
+        detail: "'SAIKAPIAN' embroidered across the upper back",
+      },
+      {
+        title: "Cotton material",
+        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+      },
+      {
+        title: "Sporty detailing",
+        detail: "Red-and-white stripes on the sleeves and trouser legs, with contrast piping across the chest and trousers",
+      },
+      {
+        title: "Comfortable fit",
+        detail: "Full-zip jacket with elasticated cuffs, and trousers with an elastic waistband",
+      },
+    ],
     images: [
-      { src: `${CLOTHING_DIR}/TrackSuit Black Front.png`, label: "Front" },
-      { src: `${CLOTHING_DIR}/Tracksuit Balck Back.png`, label: "Back" },
-      { src: `${CLOTHING_DIR}/Tracksuit Black Side1.png`, label: "Side" },
-      { src: `${CLOTHING_DIR}/Tracksuit Black Side2.png`, label: "Side 2" },
+      { src: `${CLOTHING_DIR}/Tracksuit Black Model Front.png`, label: "Model Front" },
+      { src: `${CLOTHING_DIR}/Tracksuit Black Back.png`, label: "Model Back" },
+      { src: `${CLOTHING_DIR}/Tracksuit Black Side.png`, label: "Model Side" },
+      { src: `${CLOTHING_DIR}/Tracksuit Black Upper Closeup.png`, label: "Jacket Close-up" },
+      { src: `${CLOTHING_DIR}/Tracksuit Black Lower Closeup.png`, label: "Trousers Close-up" },
     ],
   },
   {
