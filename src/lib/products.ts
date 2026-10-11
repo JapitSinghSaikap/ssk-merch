@@ -9,6 +9,9 @@ export type ProductCategory =
 // in lib/shipping.ts. Set explicitly per product; never infer it from the SKU.
 export type ProductFulfilment = "apparel" | "accessory";
 
+// One row per measurement, with a value (in inches) for each size.
+export type SizeChart = { measurement: string; inches: Record<string, number> }[];
+
 export type ProductImage = {
   src: string;
   label: string;
@@ -33,6 +36,7 @@ export type Product = {
   description: string;
   // Key-feature bullets shown under the description on the product page.
   features?: ProductFeature[];
+  sizeChart?: SizeChart;
   images: ProductImage[];
   // Excluded from the shop, product pages, and checkout — planned for a
   // later launch phase. Still visible in the admin catalogue.
@@ -44,6 +48,12 @@ const TSHIRT_DIR = `${CLOTHING_DIR}/Updated Tshirt Images`;
 const ACCESSORIES_DIR = "/images/shop/accessories";
 
 const CLOTHING_SIZES = ["S", "M", "L", "XL", "XXL"];
+
+// Vendor size chart for apparel (vendor's "2XL" is our "XXL").
+const APPAREL_SIZE_CHART: SizeChart = [
+  { measurement: "Chest", inches: { S: 36, M: 38, L: 40, XL: 42, XXL: 44 } },
+  { measurement: "Length", inches: { S: 25, M: 26, L: 27, XL: 28, XXL: 29 } },
+];
 const ONE_SIZE = ["One Size"];
 
 // NOTE: Prices for hidden (later-phase) products are still ₹0 placeholders.
@@ -58,6 +68,7 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 999,
     sizes: CLOTHING_SIZES,
+    sizeChart: APPAREL_SIZE_CHART,
     fabric: "PC fabric: 70% polyester, 30% cotton. Durable and easy to care for.",
     description: "A classic black polo with a sharp edge of school colour.",
     features: [
@@ -98,7 +109,8 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 999,
     sizes: CLOTHING_SIZES,
-    fabric: "PC fabric: 70% polyester, 30% cotton. Durable and easy to care for.",
+    sizeChart: APPAREL_SIZE_CHART,
+    fabric: "Pure cotton, soft and breathable.",
     description: "A deep navy polo, timeless and easy to wear.",
     features: [
       {
@@ -106,8 +118,8 @@ export const products: Product[] = [
         detail: "Sainik School Kapurthala crest embroidered on the chest in white thread",
       },
       {
-        title: "Fabric",
-        detail: "Durable PC (polyester-cotton) blend, 70% polyester and 30% cotton, that is easy to care for",
+        title: "Cotton material",
+        detail: "Soft, breathable pure cotton for all-day comfort",
       },
       {
         title: "Premium look",
@@ -158,6 +170,7 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 999,
     sizes: CLOTHING_SIZES,
+    sizeChart: APPAREL_SIZE_CHART,
     fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description: "A crisp white polo in the school colours.",
     features: [
@@ -218,6 +231,7 @@ export const products: Product[] = [
     fulfilment: "apparel",
     price: 2199,
     sizes: CLOTHING_SIZES,
+    sizeChart: APPAREL_SIZE_CHART,
     fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description:
       "A full-zip black tracksuit with sporty red-and-white detailing, made for reunions, morning runs and everything in between.",
