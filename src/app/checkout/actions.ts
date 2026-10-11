@@ -256,6 +256,13 @@ export async function verifyPayment(params: {
           o.id,
           o.customer_name,
           o.email,
+          o.phone,
+          o.address_line1,
+          o.address_line2,
+          o.city,
+          o.state,
+          o.pincode,
+          o.notes,
           o.total_amount,
           o.shipping_fee,
           o.created_at,
@@ -284,6 +291,13 @@ export async function verifyPayment(params: {
         id: string;
         customer_name: string;
         email: string;
+        phone: string;
+        address_line1: string;
+        address_line2: string | null;
+        city: string;
+        state: string;
+        pincode: string;
+        notes: string | null;
         total_amount: number;
         shipping_fee: number;
         created_at: string;
@@ -380,13 +394,130 @@ export async function verifyPayment(params: {
 </body>
 </html>`;
 
+      // Customer confirmation email
       await resend.emails.send({
         from: RESEND_FROM_EMAIL,
         to: order.email,
-        bcc: process.env.ADMIN_NOTIFICATION_EMAIL,
         subject: `Order Confirmed – #${shortRef} | SAIKAP Merch`,
         html,
       });
+
+      // Admin notification email — separate, ops-focused
+      if (process.env.ADMIN_NOTIFICATION_EMAIL) {
+        const adminUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://saikap.in"}/admin`;
+        const fullAddress = [
+          order.address_line1,
+          order.address_line2,
+          order.city,
+          order.state,
+          order.pincode,
+        ].filter(Boolean).join(", ");
+
+        const adminItemRows = order.items
+          .map((item) =>
+            `<tr>
+              <td style="padding:6px 8px;border-bottom:1px solid #e5e7eb;font-size:13px;">${item.product_name}${item.color ? ` (${item.color})` : ""} — ${item.size}</td>
+              <td style="padding:6px 8px;border-bottom:1px solid #e5e7eb;font-size:13px;text-align:center;">×${item.quantity}</td>
+              <td style="padding:6px 8px;border-bottom:1px solid #e5e7eb;font-size:13px;text-align:right;">₹${(item.unit_price * item.quantity).toLocaleString("en-IN")}</td>
+            </tr>`,
+          ).join("");
+
+        const adminHtml = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:Arial,sans-serif;">
+  <div style="max-width:600px;margin:32px auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+
+    <!-- Header -->
+    <div style="background:#7f1d1d;padding:20px 28px;">
+      <p style="margin:0;font-size:11px;letter-spacing:0.15em;color:#fca5a5;text-transform:uppercase;">SSK Merch Admin</p>
+      <h1 style="margin:6px 0 0;font-size:22px;color:#ffffff;font-weight:600;">🛒 New Order Received</h1>
+      <p style="margin:4px 0 0;font-size:13px;color:#fecaca;">Ref: <strong>${shortRef}</strong> &nbsp;·&nbsp; ₹${Number(order.total_amount).toLocaleString("en-IN")}</p>
+    </div>
+
+    <div style="padding:24px 28px;">
+
+      <!-- Customer -->
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+        <tr><td colspan="2" style="padding:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.1em;color:#6b7280;text-transform:uppercase;">Customer</td></tr>
+        <tr>
+          <td style="padding:4px 0;font-size:13px;color:#6b7280;width:130px;">Name</td>
+          <td style="padding:4px 0;font-size:13px;color:#111827;font-weight:600;">${order.customer_name}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;font-size:13px;color:#6b7280;">Email</td>
+          <td style="padding:4px 0;font-size:13px;color:#111827;">${order.email}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;font-size:13px;color:#6b7280;">Phone</td>
+          <td style="padding:4px 0;font-size:13px;color:#111827;">${order.phone}</td>
+        </tr>
+      </table>
+
+      <!-- Delivery Address -->
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+        <tr><td colspan="2" style="padding:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.1em;color:#6b7280;text-transform:uppercase;border-top:1px solid #f3f4f6;padding-top:16px;">Delivery Address</td></tr>
+        <tr>
+          <td style="padding:4px 0;font-size:13px;color:#111827;" colspan="2">${fullAddress}</td>
+        </tr>
+        ${order.notes ? `<tr><td style="padding:8px 0 0;font-size:12px;color:#6b7280;" colspan="2">Note: ${order.notes}</td></tr>` : ""}
+      </table>
+
+      <!-- Items -->
+      <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.1em;color:#6b7280;text-transform:uppercase;border-top:1px solid #f3f4f6;padding-top:16px;">Items Ordered</p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+        <thead>
+          <tr style="background:#f9fafb;">
+            <th style="padding:6px 8px;font-size:12px;text-align:left;color:#6b7280;">Item</th>
+            <th style="padding:6px 8px;font-size:12px;text-align:center;color:#6b7280;">Qty</th>
+            <th style="padding:6px 8px;font-size:12px;text-align:right;color:#6b7280;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>${adminItemRows}</tbody>
+        <tfoot>
+          <tr>
+            <td style="padding:6px 8px;font-size:13px;color:#6b7280;" colspan="2">Delivery</td>
+            <td style="padding:6px 8px;font-size:13px;text-align:right;color:#6b7280;">${Number(order.shipping_fee) > 0 ? `₹${Number(order.shipping_fee).toLocaleString("en-IN")}` : "Free"}</td>
+          </tr>
+          <tr style="background:#f9fafb;">
+            <td style="padding:8px;font-size:14px;font-weight:700;color:#111827;" colspan="2">Total</td>
+            <td style="padding:8px;font-size:14px;font-weight:700;text-align:right;color:#7f1d1d;">₹${Number(order.total_amount).toLocaleString("en-IN")}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Order ID -->
+      <p style="margin:0 0 4px;font-size:11px;color:#9ca3af;">Full Order ID</p>
+      <p style="margin:0 0 20px;font-size:11px;font-family:monospace;color:#6b7280;word-break:break-all;">${order.id}</p>
+
+      <!-- CTA -->
+      <a href="${adminUrl}" style="display:inline-block;background:#7f1d1d;color:#ffffff;padding:10px 24px;font-size:13px;font-weight:600;text-decoration:none;border-radius:4px;">
+        Open Admin Dashboard →
+      </a>
+
+      <!-- Customer email preview -->
+      <div style="margin-top:32px;border-top:2px dashed #e5e7eb;padding-top:24px;">
+        <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:0.1em;color:#9ca3af;text-transform:uppercase;">
+          ↓ Customer confirmation email (what they received)
+        </p>
+        <div style="border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
+          ${html}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>`;
+
+        await resend.emails.send({
+          from: RESEND_FROM_EMAIL,
+          to: process.env.ADMIN_NOTIFICATION_EMAIL,
+          subject: `[NEW ORDER] #${shortRef} — ₹${Number(order.total_amount).toLocaleString("en-IN")} — ${order.customer_name}`,
+          html: adminHtml,
+        });
+      }
     } catch (err) {
       captureException(err, { action: "sendOrderConfirmationEmail", razorpayOrderId });
     }
