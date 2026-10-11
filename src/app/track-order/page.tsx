@@ -81,6 +81,7 @@ export default async function TrackOrderPage({
         FROM orders o
         LEFT JOIN order_items i ON i.order_id = o.id
         WHERE LOWER(o.email) = ${trimmedEmail}
+          AND o.status != 'pending'
         GROUP BY o.id
         ORDER BY o.created_at DESC
       `;
@@ -105,6 +106,7 @@ export default async function TrackOrderPage({
         FROM orders o
         LEFT JOIN order_items i ON i.order_id = o.id
         WHERE o.id::text = ${trimmedId}
+          AND o.status != 'pending'
         GROUP BY o.id
         LIMIT 1
       `;
