@@ -9,10 +9,10 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4 text-[11px] tracking-[0.15em]">
             <a
-              href="mailto:support@saikap.in"
+              href="mailto:saikap.merch@gmail.com"
               className="text-warm-grey transition-colors hover:text-gold"
             >
-              support@saikap.in
+              saikap.merch@gmail.com
             </a>
             <span className="text-gold/40">&middot;</span>
             <a

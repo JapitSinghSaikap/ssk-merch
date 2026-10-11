@@ -27,17 +27,17 @@ export default function ContactPage() {
               Email Support
             </p>
             <a
-              href="mailto:support@saikap.in"
+              href="mailto:saikap.merch@gmail.com"
               className="mt-3 block font-display text-2xl text-cream transition-colors hover:text-gold"
             >
-              support@saikap.in
+              saikap.merch@gmail.com
             </a>
             <p className="mt-3 text-sm text-warm-grey leading-relaxed">
               We typically respond within 24–48 hours. For order-related queries
               please include your Order ID or the email used at checkout.
             </p>
             <a
-              href="mailto:support@saikap.in"
+              href="mailto:saikap.merch@gmail.com"
               className="mt-6 inline-block border border-gold/40 px-6 py-2.5 text-xs tracking-[0.2em] text-gold transition-colors hover:border-gold hover:text-cream"
             >
               SEND AN EMAIL
