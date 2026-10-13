@@ -3,6 +3,11 @@
 import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import OrderTotals from "@/components/cart/OrderTotals";
+import {
+  INDIAN_PINCODE_PATTERN,
+  PINCODE_ERROR_MESSAGE,
+  isIndianPincode,
+} from "@/lib/shipping";
 import { toast } from "sonner";
 import { initOrder, verifyPayment } from "@/app/checkout/actions";
 import type { AddressFields } from "@/app/checkout/actions";
@@ -58,12 +63,23 @@ export default function CheckoutForm({ prefill }: { prefill?: Prefill }) {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    setAddress((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name } = e.target;
+    // PIN codes are digits only — drop spaces and anything pasted alongside.
+    const value = name === "pincode" ? e.target.value.replace(/\D/g, "") : e.target.value;
+    setAddress((prev) => ({ ...prev, [name]: value }));
   }
+
+  const pincodeInvalid = address.pincode.length === 6 && !isIndianPincode(address.pincode);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (!isIndianPincode(address.pincode)) {
+      setError(PINCODE_ERROR_MESSAGE);
+      toast.error(PINCODE_ERROR_MESSAGE);
+      return;
+    }
 
     startTransition(async () => {
       const result = await initOrder(address, items);
@@ -313,14 +329,25 @@ export default function CheckoutForm({ prefill }: { prefill?: Prefill }) {
                 id="pincode"
                 name="pincode"
                 type="text"
+                inputMode="numeric"
+                autoComplete="postal-code"
                 placeholder="144601"
                 maxLength={6}
                 value={address.pincode}
                 onChange={handleChange}
                 required
-                pattern="\d{6}"
+                pattern={INDIAN_PINCODE_PATTERN}
+                title={PINCODE_ERROR_MESSAGE}
+                aria-invalid={pincodeInvalid}
+                aria-describedby="pincode-hint"
                 className={`${inputClass} mt-2`}
               />
+              <p
+                id="pincode-hint"
+                className={`mt-2 text-xs ${pincodeInvalid ? "text-red-300" : "text-warm-grey/60"}`}
+              >
+                {pincodeInvalid ? "Enter a valid Indian PIN code." : "We deliver within India only."}
+              </p>
             </div>
           </div>
 

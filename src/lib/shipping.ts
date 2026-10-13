@@ -204,3 +204,15 @@ export function shippingDisplay(quote: ShippingQuote): ShippingDisplay {
 export function checkoutBlockedMessage(quote: ShippingQuote) {
   return `Add ${formatPaise(quote.additionalAccessoryAmountRequiredPaise)} more in accessories to continue checkout.`;
 }
+
+// We deliver within India only. Indian PIN codes are six digits and never
+// start with 0 (the first digit is the postal region, 1–8, or 9 for the Army
+// Postal Service). Shared by the checkout form and the server's validation.
+export const INDIAN_PINCODE_PATTERN = "[1-9][0-9]{5}";
+
+export const PINCODE_ERROR_MESSAGE =
+  "We currently deliver within India only. Please enter a valid 6-digit Indian PIN code.";
+
+export function isIndianPincode(value: string) {
+  return new RegExp(`^${INDIAN_PINCODE_PATTERN}$`).test(value);
+}
