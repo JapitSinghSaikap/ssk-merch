@@ -273,17 +273,43 @@ export const products: Product[] = [
     category: "tracksuit",
     categoryLabel: "Tracksuits",
     fulfilment: "apparel",
-    price: 0,
-    hidden: true,
+    price: 2199,
     sizes: CLOTHING_SIZES,
-    fabric: "Brushed polyester tracksuit fabric with a soft inner lining.",
+    sizeChart: APPAREL_SIZE_CHART,
+    fabric: "Cotton Lycra, soft and breathable with a comfortable stretch.",
     description:
-      "Full-zip tracksuit jacket and trousers in maroon, trimmed in gold-and-orange racing stripes, with 'SAIKAPIAN' embroidered across the back and the school crest on the chest.",
+      "A full-zip maroon-and-navy tracksuit in the school colours, made for reunions, morning runs and everything in between.",
+    features: [
+      {
+        title: "School crest embroidery",
+        detail: "Sainik School Kapurthala crest embroidered on the chest in cream thread",
+      },
+      {
+        title: "SAIKAPIAN on the back",
+        detail: "'SAIKAPIAN' embroidered across the upper back",
+      },
+      {
+        title: "Cotton material",
+        detail: "Soft, breathable cotton Lycra with a comfortable stretch for all-day wear",
+      },
+      {
+        title: "Sporty detailing",
+        detail: "Maroon jacket with navy raglan sleeves and cream chest panels, and navy trousers with maroon-and-white side stripes",
+      },
+      {
+        title: "Comfortable fit",
+        detail: "Full-zip jacket with elasticated cuffs, and trousers with an elastic waistband",
+      },
+    ],
     images: [
-      { src: `${CLOTHING_DIR}/Tracksuit Maroon  Front.png`, label: "Front" },
-      { src: `${CLOTHING_DIR}/Tracksuit Maroon Back.png`, label: "Back" },
-      { src: `${CLOTHING_DIR}/Tracksuit Maroon Side1.png`, label: "Side" },
-      { src: `${CLOTHING_DIR}/Tracksuit Maroon Side2.png`, label: "Side 2" },
+      { src: `${CLOTHING_DIR}/Model Maroon Side 4.png`, label: "Model Front" },
+      { src: `${CLOTHING_DIR}/Model Maroon Side 3.png`, label: "Model Back" },
+      { src: `${CLOTHING_DIR}/Model Maroon Side 2.png`, label: "Model Side" },
+      { src: `${CLOTHING_DIR}/Model Maroon Tracksuit Side 1.png`, label: "Model Side 2" },
+      { src: `${CLOTHING_DIR}/Maroon Tracksuit Front View.png`, label: "Front" },
+      { src: `${CLOTHING_DIR}/Maroon Navy Tracksuit Back View.png`, label: "Back" },
+      { src: `${CLOTHING_DIR}/Maroon Tracksuit Side View 2.png`, label: "Side" },
+      { src: `${CLOTHING_DIR}/Maroon Tracksuit Side View 1.png`, label: "Side 2" },
     ],
   },
   {

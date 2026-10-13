@@ -8,7 +8,13 @@ import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { redis } from "@/lib/redis";
 import { getProductBySlug } from "@/lib/products";
-import { SHIPPING_RULES, checkoutBlockedMessage, quoteShipping } from "@/lib/shipping";
+import {
+  PINCODE_ERROR_MESSAGE,
+  SHIPPING_RULES,
+  checkoutBlockedMessage,
+  isIndianPincode,
+  quoteShipping,
+} from "@/lib/shipping";
 import { captureException } from "@/lib/monitoring";
 import { Ratelimit } from "@upstash/ratelimit";
 import type { CartItem } from "@/components/cart/CartContext";
@@ -90,8 +96,8 @@ export async function initOrder(
       return { success: false, error: `${field} is required.` };
   }
 
-  if (!/^\d{6}$/.test(address.pincode))
-    return { success: false, error: "Pincode must be 6 digits." };
+  if (!isIndianPincode(address.pincode))
+    return { success: false, error: PINCODE_ERROR_MESSAGE };
 
   const validatedItems: Array<CartItem & { serverPrice: number }> = [];
   for (const item of cartItems) {
