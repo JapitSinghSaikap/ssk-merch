@@ -72,9 +72,9 @@ export default function ProductGallery({
           className="object-contain p-10"
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
-        <span className="absolute bottom-4 right-4 flex items-center gap-2 border border-gold/30 bg-maroon-dark/80 px-3 py-1.5 text-[11px] tracking-[0.15em] text-cream opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="absolute bottom-4 right-4 flex items-center gap-2 border border-gold/30 bg-maroon-dark/80 px-3 py-1.5 text-[11px] tracking-[0.15em] text-cream transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
           <ZoomIn size={14} />
-          ZOOM
+          TAP TO ZOOM
         </span>
       </button>
 
@@ -121,9 +121,10 @@ export default function ProductGallery({
             onClick={closeZoom}
             aria-label="Close zoom"
             autoFocus
-            className="absolute right-6 top-6 z-10 text-cream hover:text-gold"
+            className="absolute right-6 top-6 z-10 flex items-center gap-2 text-cream hover:text-gold"
           >
-            <X size={28} />
+            <X size={24} />
+            <span className="text-xs tracking-[0.15em] sm:hidden">CLOSE</span>
           </button>
 
           {images.length > 1 && (
