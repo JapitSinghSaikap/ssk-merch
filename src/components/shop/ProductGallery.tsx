@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import type { ProductImage } from "@/lib/products";
@@ -23,11 +23,45 @@ export default function ProductGallery({
     setActiveIndex((i) => (i + 1) % images.length);
   }
 
+  // The zoom view gets its own history entry, so the browser/phone back
+  // button closes it instead of leaving the product page. Every close path
+  // goes through history.back(); the popstate listener does the closing.
+  function openZoom() {
+    window.history.pushState(null, "");
+    setZoomOpen(true);
+  }
+  function closeZoom() {
+    window.history.back();
+  }
+
+  useEffect(() => {
+    if (!zoomOpen) return;
+
+    function handlePopState() {
+      setZoomOpen(false);
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") window.history.back();
+      else if (e.key === "ArrowLeft") setActiveIndex((i) => (i - 1 + images.length) % images.length);
+      else if (e.key === "ArrowRight") setActiveIndex((i) => (i + 1) % images.length);
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [zoomOpen, images.length]);
+
   return (
     <div>
       <button
         type="button"
-        onClick={() => setZoomOpen(true)}
+        onClick={openZoom}
         className="group relative block aspect-square w-full overflow-hidden border border-gold/20 bg-cream/5"
       >
         <Image
@@ -71,12 +105,23 @@ export default function ProductGallery({
       )}
 
       {zoomOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-6">
+        // Clicking anywhere but the controls closes — the image itself ignores
+        // pointer events so those clicks land on this backdrop.
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${productName} images`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeZoom();
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-6"
+        >
           <button
             type="button"
-            onClick={() => setZoomOpen(false)}
+            onClick={closeZoom}
             aria-label="Close zoom"
-            className="absolute right-6 top-6 text-cream hover:text-gold"
+            autoFocus
+            className="absolute right-6 top-6 z-10 text-cream hover:text-gold"
           >
             <X size={28} />
           </button>
@@ -87,7 +132,7 @@ export default function ProductGallery({
                 type="button"
                 onClick={showPrev}
                 aria-label="Previous image"
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-cream hover:text-gold sm:left-8"
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-cream hover:text-gold sm:left-8"
               >
                 <ChevronLeft size={32} />
               </button>
@@ -95,14 +140,14 @@ export default function ProductGallery({
                 type="button"
                 onClick={showNext}
                 aria-label="Next image"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-cream hover:text-gold sm:right-8"
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 text-cream hover:text-gold sm:right-8"
               >
                 <ChevronRight size={32} />
               </button>
             </>
           )}
 
-          <div className="relative h-full w-full max-w-3xl">
+          <div className="pointer-events-none relative h-full w-full max-w-3xl">
             <Image
               src={activeImage.src}
               alt={`${productName} — ${activeImage.label} view, zoomed`}
@@ -112,7 +157,7 @@ export default function ProductGallery({
             />
           </div>
 
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-[0.2em] text-warm-grey">
+          <p className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-[0.2em] text-warm-grey">
             {activeImage.label.toUpperCase()}
           </p>
         </div>
