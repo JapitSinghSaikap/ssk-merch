@@ -15,7 +15,7 @@ const REFRESH_SECRET = new TextEncoder().encode(
 );
 
 const VALID_STATUSES = [
-  "pending",
+  "paid",
   "processing",
   "shipped",
   "delivered",

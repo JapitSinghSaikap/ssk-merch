@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 import { sql } from "@/lib/db";
 import { getProductBySlug } from "@/lib/products";
+import { PAID_ORDER_STATUSES } from "@/lib/orderStatus";
 
 const ACCESS_SECRET = new TextEncoder().encode(
   process.env.JWT_ACCESS_SECRET ?? "",
@@ -80,6 +81,7 @@ export async function GET() {
       ) as items
     FROM orders o
     LEFT JOIN order_items i ON i.order_id = o.id
+    WHERE o.status = ANY(${PAID_ORDER_STATUSES})
     GROUP BY o.id
     ORDER BY o.created_at DESC
   `;

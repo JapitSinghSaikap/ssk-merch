@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { sql } from "@/lib/db";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { PAID_ORDER_STATUSES } from "@/lib/orderStatus";
 
 export const metadata: Metadata = {
   title: "Track Order | Sainik School Kapurthala Merch",
 };
 
 const STAGES = [
-  { key: "pending",    label: "Order Placed" },
+  { key: "paid",       label: "Order Placed" },
   { key: "processing", label: "Processing" },
   { key: "shipped",    label: "Shipped" },
   { key: "delivered",  label: "Delivered" },
@@ -21,7 +22,7 @@ function getStageIndex(status: string): number {
 }
 
 function getStatusMessage(status: string): string {
-  if (status === "pending")
+  if (status === "paid")
     return "Your order has been received. We'll start processing it soon.";
   if (status === "processing" || status === "packed")
     return "Your order is being processed and packed for dispatch.";
@@ -81,7 +82,7 @@ export default async function TrackOrderPage({
         FROM orders o
         LEFT JOIN order_items i ON i.order_id = o.id
         WHERE LOWER(o.email) = ${trimmedEmail}
-          AND o.status != 'pending'
+          AND o.status = ANY(${PAID_ORDER_STATUSES})
         GROUP BY o.id
         ORDER BY o.created_at DESC
       `;
@@ -106,7 +107,7 @@ export default async function TrackOrderPage({
         FROM orders o
         LEFT JOIN order_items i ON i.order_id = o.id
         WHERE o.id::text = ${trimmedId}
-          AND o.status != 'pending'
+          AND o.status = ANY(${PAID_ORDER_STATUSES})
         GROUP BY o.id
         LIMIT 1
       `;

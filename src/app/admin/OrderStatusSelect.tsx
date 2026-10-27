@@ -6,10 +6,12 @@ import { ChevronDown, Check, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { updateOrderStatus } from "./actions";
 
-const STATUSES = ["pending", "processing", "shipped", "delivered"] as const;
+// No "pending": a pending order is an unpaid checkout, hidden from the admin
+// list — setting a paid order back to it would make the order disappear.
+const STATUSES = ["paid", "processing", "shipped", "delivered"] as const;
 
 const statusColor: Record<string, string> = {
-  pending:    "text-warm-grey",
+  paid:       "text-warm-grey",
   processing: "text-gold",
   shipped:    "text-blue-300",
   delivered:  "text-green-300",

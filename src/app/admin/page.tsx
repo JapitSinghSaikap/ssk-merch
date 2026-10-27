@@ -5,6 +5,7 @@ import OrderStatusSelect from "./OrderStatusSelect";
 import SyncSheetsButton from "./SyncSheetsButton";
 import { getAllProducts } from "@/lib/products";
 import Link from "next/link";
+import { PAID_ORDER_STATUSES } from "@/lib/orderStatus";
 
 type Registration = {
   id: string;
@@ -185,9 +186,9 @@ export default async function AdminPage({
     }
   }
 
-  // Only count orders that have been paid — exclude abandoned (pending) and failed
-  const PAID_STATUSES = ["paid", "processing", "shipped", "delivered"];
-  const paidOrders = orders.filter((o) => PAID_STATUSES.includes(o.status));
+  // Only list and count orders that have been paid — exclude abandoned
+  // (pending) and failed checkouts.
+  const paidOrders = orders.filter((o) => PAID_ORDER_STATUSES.includes(o.status));
 
   const totalRevenue = paidOrders.reduce(
     (sum, o) => sum + Number(o.total_amount),
@@ -197,7 +198,7 @@ export default async function AdminPage({
   const pendingOrders = orders.filter((o) => o.status === "paid").length;
   const abandonedOrders = orders.filter((o) => o.status === "pending").length;
 
-  const totalOrderPages = Math.max(1, Math.ceil(orders.length / PER_PAGE));
+  const totalOrderPages = Math.max(1, Math.ceil(paidOrders.length / PER_PAGE));
   const totalRegPages = Math.max(
     1,
     Math.ceil(registrations.length / PER_PAGE),
@@ -206,7 +207,7 @@ export default async function AdminPage({
   const safeOrderPage = Math.min(currentPage, totalOrderPages);
   const safeRegPage = Math.min(currentPage, totalRegPages);
 
-  const ordersSlice = orders.slice(
+  const ordersSlice = paidOrders.slice(
     (safeOrderPage - 1) * PER_PAGE,
     safeOrderPage * PER_PAGE,
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { sql } from "@/lib/db";
+import { PAID_ORDER_STATUSES } from "@/lib/orderStatus";
 
 export const metadata = {
   title: "My Orders | Sainik School Kapurthala Merch",
@@ -28,7 +29,7 @@ type Order = {
 };
 
 const statusStyle: Record<string, string> = {
-  pending:    "text-warm-grey border-warm-grey/30",
+  paid:       "text-warm-grey border-warm-grey/30",
   packed:     "text-gold border-gold/40",       // legacy
   processing: "text-gold border-gold/40",
   shipped:    "text-blue-300 border-blue-300/40",
@@ -36,7 +37,7 @@ const statusStyle: Record<string, string> = {
 };
 
 const statusLabel: Record<string, string> = {
-  pending:    "Order Placed",
+  paid:       "Order Placed",
   packed:     "Processing",   // legacy
   processing: "Processing",
   shipped:    "Shipped",
@@ -88,6 +89,7 @@ export default async function AccountPage() {
       FROM orders o
       LEFT JOIN order_items i ON i.order_id = o.id
       WHERE o.user_id = ${userId}
+        AND o.status = ANY(${PAID_ORDER_STATUSES})
       GROUP BY o.id
       ORDER BY o.created_at DESC
     `;
