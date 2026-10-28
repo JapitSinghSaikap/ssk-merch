@@ -241,7 +241,7 @@ export async function verifyPayment(params: {
         paid_at = now()
       WHERE razorpay_order_id = ${razorpayOrderId}
         AND user_id = ${userId}
-        AND status = 'pending'
+        AND status IN ('pending', 'failed') -- a retry can succeed after a failed attempt
     `;
   } catch (err) {
     captureException(err, { action: "verifyPayment_db", razorpayOrderId });

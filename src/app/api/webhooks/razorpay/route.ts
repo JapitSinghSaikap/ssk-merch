@@ -145,8 +145,11 @@ async function handlePaymentCaptured(payment: RazorpayPaymentEntity): Promise<vo
   if (!sql) return;
 
   try {
-    // AND status = 'pending' ensures we never overwrite a manually-set or
-    // already-finalised status — idempotent and out-of-order safe.
+    // Only a pending or failed order can become paid: never overwrite a
+    // manually-set or already-finalised status (idempotent, out-of-order
+    // safe). 'failed' is included because a customer can retry inside the
+    // same Razorpay checkout after a failed attempt — the earlier
+    // payment.failed must not block the successful retry.
     await sql`
       UPDATE orders
       SET
@@ -154,7 +157,7 @@ async function handlePaymentCaptured(payment: RazorpayPaymentEntity): Promise<vo
         razorpay_payment_id  = ${payment.id},
         paid_at              = now()
       WHERE razorpay_order_id = ${payment.order_id}
-        AND status            = 'pending'
+        AND status            IN ('pending', 'failed')
     `;
   } catch (err) {
     captureException(err, {
