@@ -104,6 +104,8 @@ export async function initOrder(
     const product = getProductBySlug(item.slug);
     if (!product || product.hidden)
       return { success: false, error: `Product not found: ${item.slug}` };
+    if (product.outOfStock)
+      return { success: false, error: `${product.name} is out of stock. Please remove it from your cart.` };
     if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_ITEM_QUANTITY)
       return { success: false, error: `Quantity for ${item.name} must be between 1 and ${MAX_ITEM_QUANTITY}.` };
     validatedItems.push({ ...item, serverPrice: product.price });

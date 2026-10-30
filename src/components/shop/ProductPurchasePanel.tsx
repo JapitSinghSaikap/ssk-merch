@@ -16,7 +16,7 @@ export default function ProductPurchasePanel({
   const { addItem } = useCart();
 
   function handleAdd() {
-    if (!selectedSize) return;
+    if (!selectedSize || product.outOfStock) return;
     addItem({
       slug: product.slug,
       name: product.name,
@@ -127,14 +127,24 @@ export default function ProductPurchasePanel({
 
       {/* Add to cart */}
       <div className="mt-10">
-        <button
-          type="button"
-          onClick={handleAdd}
-          aria-label={`Add ${product.name} to cart`}
-          className="w-full bg-gold px-8 py-4 text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90"
-        >
-          {added ? "ADDED TO CART ✓" : "ADD TO CART"}
-        </button>
+        {product.outOfStock ? (
+          <button
+            type="button"
+            disabled
+            className="w-full cursor-not-allowed border border-gold/30 px-8 py-4 text-xs font-semibold tracking-[0.2em] text-warm-grey"
+          >
+            OUT OF STOCK
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAdd}
+            aria-label={`Add ${product.name} to cart`}
+            className="w-full bg-gold px-8 py-4 text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90"
+          >
+            {added ? "ADDED TO CART ✓" : "ADD TO CART"}
+          </button>
+        )}
       </div>
     </div>
   );

@@ -81,7 +81,9 @@ export default async function ProductPage({
       url: `https://saikap.in/shop/${product.slug}`,
       priceCurrency: "INR",
       price: product.price.toFixed(2),
-      availability: "https://schema.org/InStock",
+      availability: product.outOfStock
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
     },
   };

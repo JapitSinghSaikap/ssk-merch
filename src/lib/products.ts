@@ -41,6 +41,8 @@ export type Product = {
   // Excluded from the shop, product pages, and checkout — planned for a
   // later launch phase. Still visible in the admin catalogue.
   hidden?: boolean;
+  // Still listed, but can't be added to the cart or ordered.
+  outOfStock?: boolean;
 };
 
 const CLOTHING_DIR = "/images/shop/clothing";
@@ -108,6 +110,7 @@ export const products: Product[] = [
     categoryLabel: "T-Shirts",
     fulfilment: "apparel",
     price: 999,
+    outOfStock: true,
     sizes: CLOTHING_SIZES,
     sizeChart: APPAREL_SIZE_CHART,
     fabric: "Pure cotton, soft and breathable.",

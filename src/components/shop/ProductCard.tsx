@@ -29,6 +29,11 @@ export default function ProductCard({
           className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
         />
+        {product.outOfStock && (
+          <span className="absolute left-3 top-3 border border-gold/30 bg-maroon-dark/90 px-2.5 py-1 text-[10px] tracking-[0.2em] text-cream">
+            OUT OF STOCK
+          </span>
+        )}
       </div>
 
       {product.images.length > 1 && (

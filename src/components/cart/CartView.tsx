@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useCart } from "@/components/cart/CartContext";
 import OrderTotals from "@/components/cart/OrderTotals";
+import { getProductBySlug } from "@/lib/products";
 
 export default function CartView() {
   const { items, updateQuantity, removeItem, shippingQuote } = useCart();
@@ -30,6 +31,12 @@ export default function CartView() {
       </div>
     );
   }
+
+  // Items added before a product sold out stay in saved carts — flag them
+  // and hold checkout until they're removed.
+  const isOutOfStock = (slug: string) => getProductBySlug(slug)?.outOfStock ?? false;
+  const hasOutOfStock = items.some((item) => isOutOfStock(item.slug));
+  const canCheckout = shippingQuote.canCheckout && !hasOutOfStock;
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16 lg:px-10">
@@ -63,6 +70,11 @@ export default function CartView() {
                   <p className="mt-0.5 text-xs text-warm-grey">
                     {[item.color, item.size].filter(Boolean).join(" · ")}
                   </p>
+                  {isOutOfStock(item.slug) && (
+                    <p className="mt-1 text-xs text-red-300">
+                      Out of stock — please remove to continue.
+                    </p>
+                  )}
                 </div>
                 <p className="text-sm text-cream">
                   ₹{(item.price * item.quantity).toLocaleString("en-IN")}
@@ -115,7 +127,13 @@ export default function CartView() {
       <div className="mt-8 border-t border-gold/20 pt-8">
         <OrderTotals quote={shippingQuote} />
 
-        {shippingQuote.canCheckout ? (
+        {hasOutOfStock && (
+          <p className="mt-6 text-xs text-red-300">
+            Remove out-of-stock items to continue to checkout.
+          </p>
+        )}
+
+        {canCheckout ? (
           <Link
             href="/checkout"
             className="mt-8 block w-full bg-gold px-8 py-4 text-center text-xs font-semibold tracking-[0.2em] text-maroon-dark transition-opacity hover:opacity-90"
